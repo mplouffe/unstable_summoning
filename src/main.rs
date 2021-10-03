@@ -177,10 +177,10 @@ fn main() -> BError {
         .with_dimensions(DISPLAY_WIDTH, DISPLAY_HEIGHT)
         .with_tile_dimensions(64, 64)
         .with_resource_path("resources/")
-        .with_font("unstable32x32.png", 32, 32)
+        .with_font("unstablefont.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
-        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstable32x32.png")
-        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstable32x32.png")
+        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")
+        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")
         .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")
         .build()?;
     

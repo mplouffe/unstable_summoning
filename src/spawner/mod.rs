@@ -6,7 +6,8 @@ pub fn spawn_player(ecs: &mut World) {
             Player {
                 level: 0
             },
-            Point::new(40, 25),
+            Name("Player".to_string()),
+            Point::new(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2),
             Render {
                 color: ColorPair::new(WHITE, BLACK),
                 glyph: to_cp437('@')
