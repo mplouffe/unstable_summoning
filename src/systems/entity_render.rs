@@ -11,7 +11,6 @@ pub fn entity_render(
 
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(1);
-    let offset = Point::new(camera.left_x, camera.top_y);
 
     renderables
         .iter(ecs)

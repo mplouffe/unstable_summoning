@@ -15,14 +15,14 @@ pub fn tooltips(
     
     positions
         .iter(ecs)
-        .filter(|(_, pos, _)| **pos == mouse_pos)
+        .filter(|(_, pos, _)| **pos == *mouse_pos)
         .for_each(|(entity, _, name)| {
             let screen_pos = *mouse_pos * 4;
             let display = if let Ok(desc) = ecs.entry_ref(*entity)
                 .unwrap()
                 .get_component::<Description>()
             {
-                format!("{} : {}", &name.0, desc.text)
+                format!("{} : {}", &name.0, &desc.0)
             } else {
                 name.0.clone()
             };

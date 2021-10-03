@@ -1,3 +1,9 @@
+use std::collections::HashSet;
+
+mod components;
+mod systems;
+mod turn_state;
+mod spawner;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
@@ -5,11 +11,14 @@ mod prelude {
     pub use legion::world::SubWorld;
     pub use legion::systems::CommandBuffer;
 
-    pub const SCREEN_WIDTH: i32 = 80;
-    pub const SCREEN_HEIGHT: i32 = 50;
+    pub const SCREEN_WIDTH: i32 = 40;
+    pub const SCREEN_HEIGHT: i32 = 20;
     pub const DISPLAY_WIDTH: i32 = SCREEN_WIDTH / 2;
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
     pub use crate::turn_state::*;
+    pub use crate::components::*;
+    pub use crate::systems::*;
+    pub use crate::spawner::*;
 }
 
 use prelude::*;
@@ -26,11 +35,11 @@ impl State {
     fn new() -> Self {
         let mut ecs = World::default();
         let mut resources = Resources::default();
-        let mut rng = RandomNumbergenerator::new();
-        let mut elemental_table = ElementalTableBuilder::new(&mut rng);
+        let mut rng = RandomNumberGenerator::new();
         
-        resources.insert(elemental_table.elemental_matrix);
-        resources.insert(Turnstate::GameStart);
+        spawn_player(&mut ecs);
+
+        resources.insert(TurnState::GameStart);
 
         Self {
             ecs,
@@ -96,9 +105,8 @@ impl State {
         self.ecs = World::default();
         self.resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
-        let mut elemental_table = ElementalTableBuilder::new(&mut rng);
+        spawn_player(&mut self.ecs);
 
-        self.resources.insert(elemental_table.elemental_matrix);
         self.resources.insert(TurnState::AwaitingInput);
     }
 
@@ -121,7 +129,6 @@ impl State {
         cb.flush(&mut self.ecs);
 
         let mut rng = RandomNumberGenerator::new();
-        let mut elemental_table = ElementalTableBuilder::new(&mut rng); 
 
         let mut player_level = 0;
         <(&mut Player)>::query()
@@ -132,7 +139,6 @@ impl State {
             }
         );
 
-        self.resources.insert(elemental_table.elemental_matrix);
         self.resources.insert(TurnState::AwaitingInput);
     }
 }
@@ -169,7 +175,7 @@ fn main() -> BError {
         .with_title("ld49: Unstable Summoning")
         .with_fps_cap(30.0)
         .with_dimensions(DISPLAY_WIDTH, DISPLAY_HEIGHT)
-        .with_tile_dimensions(16, 16)
+        .with_tile_dimensions(64, 64)
         .with_resource_path("resources/")
         .with_font("unstable32x32.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)

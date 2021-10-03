@@ -37,7 +37,7 @@ pub fn hud(ecs: &SubWorld) {
         .unwrap();
     
     draw_batch.print_color_right(
-        Point::new(SCREEN_WIDTH*2, 1),
+        Point::new(SCREEN_WIDTH*2, (SCREEN_HEIGHT*2)-1),
         format!("Science Level: {}", level+1),
         ColorPair::new(YELLOW, BLACK)
     );
