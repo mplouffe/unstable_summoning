@@ -23,3 +23,8 @@ pub struct Name(pub String);
 
 #[derive(Clone, PartialEq)]
 pub struct Description(pub String);
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Flask {
+    pub color: ColorPair,
+}

@@ -4,13 +4,13 @@ use crate::prelude::*;
 #[read_component(Point)]
 #[read_component(Render)]
 #[read_component(Player)]
-pub fn entity_render(
+pub fn player_render(
     ecs: &SubWorld
 ) {
-    let mut renderables = <(&Point, &Render)>::query().filter(component::<Flask>());
+    let mut renderables = <(&Point, &Render)>::query().filter(component::<Player>());
 
     let mut draw_batch = DrawBatch::new();
-    draw_batch.target(SPRITE_LAYER);
+    draw_batch.target(CURSOR_LAYER);
 
     renderables
         .iter(ecs)

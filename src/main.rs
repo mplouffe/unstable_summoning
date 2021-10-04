@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 mod components;
+mod map;
 mod systems;
 mod turn_state;
 mod spawner;
@@ -15,7 +16,13 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 20;
     pub const DISPLAY_WIDTH: i32 = SCREEN_WIDTH / 2;
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
+    pub const BG_LAYER: usize = 0;
+    pub const SPRITE_LAYER: usize = 1;
+    pub const CURSOR_LAYER: usize =1;
+    pub const HUD_LAYER: usize = 2;
+
     pub use crate::turn_state::*;
+    pub use crate::map::*;
     pub use crate::components::*;
     pub use crate::systems::*;
     pub use crate::spawner::*;
@@ -36,9 +43,22 @@ impl State {
         let mut ecs = World::default();
         let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
+        let mut map = Map::new();
         
         spawn_player(&mut ecs);
+        let flask_positions = [ 
+            Point::new(2, 8),
+            Point::new(4, 8),
+            Point::new(6, 8),
+            Point::new(8, 8),
+            Point::new(11, 8),
+            Point::new(13, 8),
+            Point::new(15, 8),
+            Point::new(17, 8),
+        ];
+        spawn_flasks(&mut ecs, &flask_positions);
 
+        resources.insert(map);
         resources.insert(TurnState::GameStart);
 
         Self {
@@ -105,8 +125,22 @@ impl State {
         self.ecs = World::default();
         self.resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
-        spawn_player(&mut self.ecs);
+        let mut map = Map::new();
 
+        spawn_player(&mut self.ecs);
+        let flask_positions = [ 
+            Point::new(2, 8),
+            Point::new(4, 8),
+            Point::new(6, 8),
+            Point::new(8, 8),
+            Point::new(11, 8),
+            Point::new(13, 8),
+            Point::new(15, 8),
+            Point::new(17, 8),
+        ];
+        spawn_flasks(&mut self.ecs, &flask_positions);
+
+        self.resources.insert(map);
         self.resources.insert(TurnState::AwaitingInput);
     }
 
@@ -170,6 +204,19 @@ impl GameState for State {
     }
 }
 
+// impl GameState for State {
+//     fn tick(&mut self, ctx: &mut BTerm) {
+//         ctx.set_active_console(0);
+//         ctx.cls();
+//         ctx.set_active_console(1);
+//         ctx.cls();
+//         ctx.set_active_console(2);
+//         ctx.cls();
+
+//         ctx.
+//     }
+// }
+
 fn main() -> BError {
     let context = BTermBuilder::new()
         .with_title("ld49: Unstable Summoning")
@@ -179,9 +226,9 @@ fn main() -> BError {
         .with_resource_path("resources/")
         .with_font("unstablefont.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
-        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")
-        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")
-        .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")
+        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")         // BG
+        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")   // Sprite & Player Cursor Layer
+        .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")  // HUD Layer
         .build()?;
     
     main_loop(context, State::new())

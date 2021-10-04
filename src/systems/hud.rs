@@ -12,7 +12,7 @@ pub fn hud(ecs: &SubWorld) {
         .unwrap();
 
     let mut draw_batch = DrawBatch::new();
-    draw_batch.target(2);
+    draw_batch.target(HUD_LAYER);
     draw_batch.print_centered(1,
         "Science the Chemicals, Cursor keys to pick item, space to interact.");
     draw_batch.bar_horizontal(
