@@ -7,10 +7,11 @@ A console game about chemical reactions and summoning demons.
 
 Made in rust using bracket-lib and legion.
 
-NOTE: THIS REQUIRES A DIRTY HACK TO RUN PROPERLY
-This repo is now using a custom modded version of bracket-lib that allows batching of sprites.
-I should set it up properly to support this modified dependency, but right now it's just a dirty hack on my local machine.
-I've included a copy of the modded command_buffer.rs file in the docs section of this repo to make the dirty hack even greasier.
+
+NOTE: THIS REQUIRES A DIRTY HACK TO RUN PROPERLY <br>
+This repo is now using a custom modded version of bracket-lib that allows batching of sprites. <br>
+I should set it up properly to support this modified dependency, but right now it's just a dirty hack on my local machine. <br>
+I've included a copy of the modded command_buffer.rs file in the docs section of this repo to make the dirty hack even greasier. <br>
 
 Made by @matheuplouffe
 
