@@ -15,10 +15,11 @@ pub fn entity_render(
     renderables
         .iter(ecs)
         .for_each(|(pos, render)| {
-            draw_batch.set(
-                *pos,
-                render.color,
-                render.glyph
+            draw_batch.set_sprite(
+                Rect::with_size(pos.x*TILE_SIZE, pos.y*TILE_SIZE, 64, 64),
+                400 - 100,
+                RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                3
             );
         }
     );

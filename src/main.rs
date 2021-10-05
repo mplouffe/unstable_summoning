@@ -16,9 +16,9 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 20;
     pub const DISPLAY_WIDTH: i32 = SCREEN_WIDTH / 2;
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
+    pub const TILE_SIZE: i32 = 64;
     pub const BG_LAYER: usize = 0;
     pub const SPRITE_LAYER: usize = 1;
-    pub const CURSOR_LAYER: usize =1;
     pub const HUD_LAYER: usize = 2;
 
     pub use crate::turn_state::*;
@@ -71,7 +71,7 @@ impl State {
     }
 
     fn game_over(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(2);
+        ctx.set_active_console(HUD_LAYER);
         ctx.print_color_centered(20, RED, BLACK, "Your experiment has ended.");
         ctx.print_color_centered(25, WHITE, BLACK,
             "Slain by a monster, your hero's journey has come to a \
@@ -90,7 +90,21 @@ impl State {
     }
 
     fn game_start(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(2);
+        ctx.set_active_console(SPRITE_LAYER);
+        ctx.add_sprite(
+            Rect::with_size(576, 172, 128, 128),
+            1,
+            RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+            2
+        );
+        ctx.add_sprite(
+            Rect::with_size(566, 148, 128, 128),
+            10,
+            RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+            3
+        );
+
+        ctx.set_active_console(HUD_LAYER);
         ctx.print_color_centered(20, GREEN, BLACK, "ld49: Unstable Summoning.");
         ctx.print_color_centered(25, WHITE, BLACK,
             "Welcome to the lab.");
@@ -107,7 +121,7 @@ impl State {
     }
 
     fn victory(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(2);
+        ctx.set_active_console(HUD_LAYER);
         ctx.print_color_centered(2, GREEN, BLACK, "You have won!");
         ctx.print_color_centered(4, WHITE, BLACK,
             "I don't know how you did it. I haven't coded a win condition yet...");
@@ -204,19 +218,6 @@ impl GameState for State {
     }
 }
 
-// impl GameState for State {
-//     fn tick(&mut self, ctx: &mut BTerm) {
-//         ctx.set_active_console(0);
-//         ctx.cls();
-//         ctx.set_active_console(1);
-//         ctx.cls();
-//         ctx.set_active_console(2);
-//         ctx.cls();
-
-//         ctx.
-//     }
-// }
-
 fn main() -> BError {
     let context = BTermBuilder::new()
         .with_title("ld49: Unstable Summoning")
@@ -227,8 +228,16 @@ fn main() -> BError {
         .with_font("unstablefont.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")         // BG
-        .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")   // Sprite & Player Cursor Layer
+        .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)      // Sprite Layer
         .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")  // HUD Layer
+        .with_sprite_sheet(
+            SpriteSheet::new("resources/sprite_sheet.png")
+                .add_sprite(Rect::with_size(0, 0, 32, 32))
+                .add_sprite(Rect::with_size(32, 0, 32, 32))
+                .add_sprite(Rect::with_size(64, 0, 32, 32))
+                .add_sprite(Rect::with_size(96, 0, 32, 32))
+        )
+        .with_vsync(false)
         .build()?;
     
     main_loop(context, State::new())
