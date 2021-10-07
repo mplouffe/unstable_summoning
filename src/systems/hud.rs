@@ -14,7 +14,7 @@ pub fn hud(ecs: &SubWorld) {
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(HUD_LAYER);
     draw_batch.print_centered(1,
-        "Science the Chemicals, Cursor keys to pick item, space to interact.");
+        "Science the Chemicals, Arrow keys to move cursor, space to interact with item.");
     draw_batch.bar_horizontal(
         Point::zero(),
         SCREEN_WIDTH*2,
@@ -31,9 +31,9 @@ pub fn hud(ecs: &SubWorld) {
         ColorPair::new(WHITE, RED)
     );
 
-    let (player, level) = <(Entity, &Player)>::query()
+    let level = <&Player>::query()
         .iter(ecs)
-        .find_map(|(entity, player)| Some((*entity, player.level)))
+        .find_map(|player| Some(player.level))
         .unwrap();
     
     draw_batch.print_color_right(

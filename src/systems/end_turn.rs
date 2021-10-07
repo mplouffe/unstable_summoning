@@ -2,7 +2,6 @@ use crate::prelude::*;
 
 #[system]
 #[read_component(Health)]
-#[read_component(Point)]
 #[read_component(Player)]
 pub fn end_turn(
     ecs: &SubWorld,
@@ -16,8 +15,8 @@ pub fn end_turn(
         _ => current_state
     };
 
-    let mut player_hp = <(&Health, &Point)>::query().filter(component::<Player>());
-    player_hp.iter(ecs).for_each(|(hp, pos)| {
+    let mut player_hp = <&Health>::query().filter(component::<Player>());
+    player_hp.iter(ecs).for_each(|hp| {
         if hp.current < 1 {
             new_state = TurnState::GameOver;
         }

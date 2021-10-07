@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 mod components;
 mod map;
 mod systems;
@@ -42,8 +40,7 @@ impl State {
     fn new() -> Self {
         let mut ecs = World::default();
         let mut resources = Resources::default();
-        let mut rng = RandomNumberGenerator::new();
-        let mut map = Map::new();
+        let map = Map::new();
         
         spawn_player(&mut ecs);
         let flask_positions = [ 
@@ -120,26 +117,25 @@ impl State {
         }
     }
 
-    fn victory(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(HUD_LAYER);
-        ctx.print_color_centered(2, GREEN, BLACK, "You have won!");
-        ctx.print_color_centered(4, WHITE, BLACK,
-            "I don't know how you did it. I haven't coded a win condition yet...");
-        ctx.print_color_centered(15, WHITE, RED,
-            "You're clearly a l33t #@XXoR o_O");
-        ctx.print_color_centered(17, GREEN, BLACK,
-            "Press 1 to play again.");
+    // fn victory(&mut self, ctx: &mut BTerm) {
+    //     ctx.set_active_console(HUD_LAYER);
+    //     ctx.print_color_centered(2, GREEN, BLACK, "You have won!");
+    //     ctx.print_color_centered(4, WHITE, BLACK,
+    //         "I don't know how you did it. I haven't coded a win condition yet...");
+    //     ctx.print_color_centered(15, WHITE, RED,
+    //         "You're clearly a l33t #@XXoR o_O");
+    //     ctx.print_color_centered(17, GREEN, BLACK,
+    //         "Press 1 to play again.");
         
-        if let Some(VirtualKeyCode::Key1) = ctx.key {
-            self.reset_game_state();
-        }
-    }
+    //     if let Some(VirtualKeyCode::Key1) = ctx.key {
+    //         self.reset_game_state();
+    //     }
+    // }
 
     fn reset_game_state(&mut self) {
         self.ecs = World::default();
         self.resources = Resources::default();
-        let mut rng = RandomNumberGenerator::new();
-        let mut map = Map::new();
+        let map = Map::new();
 
         spawn_player(&mut self.ecs);
         let flask_positions = [ 
@@ -158,37 +154,35 @@ impl State {
         self.resources.insert(TurnState::AwaitingInput);
     }
 
-    fn advance_level(&mut self) {
-        let player_entity = *<Entity>::query()
-            .filter(component::<Player>())
-            .iter(&mut self.ecs)
-            .nth(0)
-            .unwrap();
+    // fn advance_level(&mut self) {
+    //     let player_entity = *<Entity>::query()
+    //         .filter(component::<Player>())
+    //         .iter(&mut self.ecs)
+    //         .nth(0)
+    //         .unwrap();
 
-        let mut entities_to_keep = HashSet::new();
-        entities_to_keep.insert(player_entity);
+    //     let mut entities_to_keep = HashSet::new();
+    //     entities_to_keep.insert(player_entity);
         
-        let mut cb = CommandBuffer::new(&mut self.ecs);
-        for e in Entity::query().iter(&self.ecs) {
-            if !entities_to_keep.contains(e) {
-                cb.remove(*e);
-            }
-        }
-        cb.flush(&mut self.ecs);
+    //     let mut cb = CommandBuffer::new(&mut self.ecs);
+    //     for e in Entity::query().iter(&self.ecs) {
+    //         if !entities_to_keep.contains(e) {
+    //             cb.remove(*e);
+    //         }
+    //     }
+    //     cb.flush(&mut self.ecs);
 
-        let mut rng = RandomNumberGenerator::new();
+    //     let mut player_level = 0;
+    //     <&mut Player>::query()
+    //         .iter_mut(&mut self.ecs)
+    //         .for_each(|player| {
+    //             player.level += 1;
+    //             player_level = player.level;
+    //         }
+    //     );
 
-        let mut player_level = 0;
-        <(&mut Player)>::query()
-            .iter_mut(&mut self.ecs)
-            .for_each(|(player)| {
-                player.level += 1;
-                player_level = player.level;
-            }
-        );
-
-        self.resources.insert(TurnState::AwaitingInput);
-    }
+    //     self.resources.insert(TurnState::AwaitingInput);
+    // }
 }
 
 impl GameState for State {
@@ -210,8 +204,8 @@ impl GameState for State {
             TurnState::MonsterTurn => self.monster_systems.execute(&mut self.ecs, &mut self.resources),
             TurnState::GameStart => self.game_start(ctx),
             TurnState::GameOver => self.game_over(ctx),
-            TurnState::Victory => self.victory(ctx),
-            TurnState::NextLevel => self.advance_level(),
+            // TurnState::Victory => self.victory(ctx),
+            // TurnState::NextLevel => self.advance_level(),
         }
 
         render_draw_buffer(ctx).expect("Render error");

@@ -1,10 +1,10 @@
 pub use crate::prelude::*;
-use std::collections::HashSet;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Render {
-    pub color: ColorPair,
-    pub glyph: FontCharType
+    pub tint: RGBA,
+    pub z_order: i32,
+    pub index: usize,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
