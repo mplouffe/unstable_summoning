@@ -2,8 +2,7 @@ use crate::prelude::*;
 
 #[system]
 #[write_component(Point)]
-#[read_component(Player)]
-#[write_component(Health)]
+#[read_component(Cursor)]
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
@@ -11,8 +10,8 @@ pub fn player_input(
     #[resource] turn_state: &mut TurnState,
 ) 
 {
-    let mut players = <(Entity, &Point)>::query()
-        .filter(component::<Player>());
+    let mut cursors = <(Entity, &Point)>::query()
+        .filter(component::<Cursor>());
 
     if let Some(key) = key {
         let delta = match key {
@@ -23,12 +22,12 @@ pub fn player_input(
             _ => Point::new(0,0),
         };
 
-        let (player_entity, destination) = players
+        let (cursor_entity, destination) = cursors
             .iter(ecs)
             .find_map(|(entity, pos)| Some((*entity, *pos + delta)))
             .unwrap();
         
-        commands.add_component(player_entity, destination);
+        commands.add_component(cursor_entity, destination);
 
         *turn_state = TurnState::PlayerTurn;
     }

@@ -41,8 +41,10 @@ impl State {
         let mut ecs = World::default();
         let mut resources = Resources::default();
         let map = Map::new();
+        let mut rng = RandomNumberGenerator::new();
         
         spawn_player(&mut ecs);
+        spawn_cursor(&mut ecs);
         let flask_positions = [ 
             Point::new(2, 8),
             Point::new(4, 8),
@@ -53,7 +55,7 @@ impl State {
             Point::new(15, 8),
             Point::new(17, 8),
         ];
-        spawn_flasks(&mut ecs, &flask_positions);
+        spawn_flasks(&mut ecs, &mut rng, &flask_positions);
 
         resources.insert(map);
         resources.insert(TurnState::GameStart);
@@ -136,8 +138,11 @@ impl State {
         self.ecs = World::default();
         self.resources = Resources::default();
         let map = Map::new();
+        let mut rng = RandomNumberGenerator::new();
 
         spawn_player(&mut self.ecs);
+        spawn_cursor(&mut self.ecs);
+
         let flask_positions = [ 
             Point::new(2, 8),
             Point::new(4, 8),
@@ -148,7 +153,7 @@ impl State {
             Point::new(15, 8),
             Point::new(17, 8),
         ];
-        spawn_flasks(&mut self.ecs, &flask_positions);
+        spawn_flasks(&mut self.ecs, &mut rng, &flask_positions);
 
         self.resources.insert(map);
         self.resources.insert(TurnState::AwaitingInput);
@@ -221,15 +226,46 @@ fn main() -> BError {
         .with_resource_path("resources/")
         .with_font("unstablefont.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
-        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")         // BG
+        .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")                 // BG
         .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)      // Sprite Layer
-        .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")  // HUD Layer
+        .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")          // HUD Layer
         .with_sprite_sheet(
             SpriteSheet::new("resources/sprite_sheet.png")
-                .add_sprite(Rect::with_size(0, 0, 32, 32))
-                .add_sprite(Rect::with_size(32, 0, 32, 32))
-                .add_sprite(Rect::with_size(64, 0, 32, 32))
-                .add_sprite(Rect::with_size(96, 0, 32, 32))
+                .add_sprite(Rect::with_size(0, 224, 32, 32))
+                .add_sprite(Rect::with_size(32, 224, 32, 32))
+                .add_sprite(Rect::with_size(64, 224, 32, 32))
+                .add_sprite(Rect::with_size(96, 224, 32, 32))
+                .add_sprite(Rect::with_size(128, 224, 32, 32))
+                .add_sprite(Rect::with_size(160, 224, 32, 32))
+                .add_sprite(Rect::with_size(192, 224, 32, 32))
+                .add_sprite(Rect::with_size(224, 224, 32, 32))
+
+                .add_sprite(Rect::with_size(0, 192, 32, 32))
+                .add_sprite(Rect::with_size(32, 192, 32, 32))
+                .add_sprite(Rect::with_size(64, 192, 32, 32))
+                .add_sprite(Rect::with_size(96, 192, 32, 32))
+                .add_sprite(Rect::with_size(128, 192, 32, 32))
+                .add_sprite(Rect::with_size(160, 192, 32, 32))
+                .add_sprite(Rect::with_size(192, 192, 32, 32))
+                .add_sprite(Rect::with_size(224, 192, 32, 32))
+
+                .add_sprite(Rect::with_size(0, 160, 32, 32))
+                .add_sprite(Rect::with_size(32, 160, 32, 32))
+                .add_sprite(Rect::with_size(64, 160, 32, 32))
+                .add_sprite(Rect::with_size(96, 160, 32, 32))
+                .add_sprite(Rect::with_size(128, 160, 32, 32))
+                .add_sprite(Rect::with_size(160, 160, 32, 32))
+                .add_sprite(Rect::with_size(192, 160, 32, 32))
+                .add_sprite(Rect::with_size(224, 160, 32, 32))
+
+                .add_sprite(Rect::with_size(0, 128, 32, 32))
+                .add_sprite(Rect::with_size(32, 128, 32, 32))
+                .add_sprite(Rect::with_size(64, 128, 32, 32))
+                .add_sprite(Rect::with_size(96, 128, 32, 32))
+                .add_sprite(Rect::with_size(128, 128, 32, 32))
+                .add_sprite(Rect::with_size(160, 128, 32, 32))
+                .add_sprite(Rect::with_size(192, 128, 32, 32))
+                .add_sprite(Rect::with_size(224, 128, 32, 32))
         )
         .with_vsync(false)
         .build()?;

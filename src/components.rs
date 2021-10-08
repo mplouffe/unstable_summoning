@@ -28,3 +28,38 @@ pub struct Description(pub String);
 pub struct Flask {
     pub color: ColorPair,
 }
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct Cursor;
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct Substance {
+    pub color: SubstanceColor,
+}
+
+#[derive(Copy, Clone, PartialEq)]
+pub enum SubstanceColor {
+    Orange,
+    Pink,
+    Red,
+    Grey,
+    White,
+    Yellow,
+    Purple,
+    Indigo,
+    BubbleGreen,
+    BubbleWhite,
+    BubblePink,
+    BubbleYellow,
+    Gold,
+    Bronze,
+    Crimson,
+    RedPink,
+    Black,
+    Blue,
+    Brown,
+    BlueGreen,
+    Aqua,
+    DarkBlue,
+    Green,
+}
