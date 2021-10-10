@@ -1,5 +1,8 @@
 pub use crate::prelude::*;
 
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Render {
     pub tint: RGBA,
@@ -24,21 +27,21 @@ pub struct Name(pub String);
 #[derive(Clone, PartialEq)]
 pub struct Description(pub String);
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Flask {
-    pub color: ColorPair,
-}
-
 #[derive(Clone, Copy, PartialEq)]
 pub struct Cursor;
 
 #[derive(Clone, Copy, PartialEq)]
-pub struct Substance {
-    pub color: SubstanceColor,
+pub struct Liquid {
+    pub color: LiquidColor,
 }
 
-#[derive(Copy, Clone, PartialEq)]
-pub enum SubstanceColor {
+#[derive(Clone, Copy, PartialEq)]
+pub struct Sludge {
+    pub color: SludgeColor,
+}
+
+#[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
+pub enum LiquidColor {
     Orange,
     Pink,
     Red,
@@ -51,6 +54,10 @@ pub enum SubstanceColor {
     BubbleWhite,
     BubblePink,
     BubbleYellow,
+}
+
+#[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
+pub enum SludgeColor {
     Gold,
     Bronze,
     Crimson,

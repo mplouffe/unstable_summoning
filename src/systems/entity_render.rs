@@ -7,7 +7,7 @@ use crate::prelude::*;
 pub fn entity_render(
     ecs: &SubWorld
 ) {
-    let mut renderables = <(&Point, &Render)>::query().filter(component::<Flask>());
+    let mut renderables = <(&Point, &Render)>::query().filter(component::<Liquid>());
 
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(SPRITE_LAYER);
