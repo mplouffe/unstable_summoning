@@ -27,6 +27,7 @@ mod prelude {
 }
 
 use prelude::*;
+use rand::thread_rng;
 
 struct State {
     ecs: World,
@@ -41,8 +42,7 @@ impl State {
         let mut ecs = World::default();
         let mut resources = Resources::default();
         let map = Map::new();
-        let mut rng = RandomNumberGenerator::new();
-        
+        let mut thread_rng = thread_rng();
         spawn_player(&mut ecs);
         spawn_cursor(&mut ecs);
         let flask_positions = [ 
@@ -55,7 +55,7 @@ impl State {
             Point::new(15, 8),
             Point::new(17, 8),
         ];
-        spawn_flasks(&mut ecs, &mut rng, &flask_positions);
+        spawn_flasks(&mut ecs, &mut thread_rng, &flask_positions);
 
         resources.insert(map);
         resources.insert(TurnState::GameStart);
@@ -138,8 +138,7 @@ impl State {
         self.ecs = World::default();
         self.resources = Resources::default();
         let map = Map::new();
-        let mut rng = RandomNumberGenerator::new();
-
+        let mut thread_rng = thread_rng();
         spawn_player(&mut self.ecs);
         spawn_cursor(&mut self.ecs);
 
@@ -153,7 +152,7 @@ impl State {
             Point::new(15, 8),
             Point::new(17, 8),
         ];
-        spawn_flasks(&mut self.ecs, &mut rng, &flask_positions);
+        spawn_flasks(&mut self.ecs, &mut thread_rng, &flask_positions);
 
         self.resources.insert(map);
         self.resources.insert(TurnState::AwaitingInput);

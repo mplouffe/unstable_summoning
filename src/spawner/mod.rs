@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 use strum::IntoEnumIterator;
-use rand::thread_rng;
+use rand::rngs::ThreadRng;
 use rand::seq::IteratorRandom;
 
 pub fn spawn_player(ecs: &mut World) {
@@ -37,11 +37,9 @@ pub fn spawn_cursor(ecs: &mut World) {
     );
 }
 
-pub fn spawn_flasks(ecs: &mut World, rng: &mut RandomNumberGenerator, flask_positions: &[Point]) {    
-    
-    let mut rng = thread_rng();
+pub fn spawn_flasks(ecs: &mut World, rng: &mut ThreadRng, flask_positions: &[Point]) {    
 
-    let random_colors = LiquidColor::iter().choose_multiple(&mut rng, flask_positions.len());
+    let random_colors = LiquidColor::iter().choose_multiple(rng, flask_positions.len());
     flask_positions
         .iter()
         .zip(random_colors.into_iter())

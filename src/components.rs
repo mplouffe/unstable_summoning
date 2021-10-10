@@ -1,6 +1,5 @@
 pub use crate::prelude::*;
 
-use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
