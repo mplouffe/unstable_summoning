@@ -218,6 +218,14 @@ impl GameState for State {
 }
 
 fn main() -> BError {
+
+    let mut sprites = Vec::new();
+    for y in 0..8 {
+        for x in 0..8 {
+            sprites.push(Sprite::new(Rect::with_size(x*32, 224-(y*32), 32, 32)));
+        }
+    }
+
     let context = BTermBuilder::new()
         .with_title("ld49: Unstable Summoning")
         .with_fps_cap(30.0)
@@ -229,44 +237,11 @@ fn main() -> BError {
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")                 // BG
         .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)      // Sprite Layer
         .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")          // HUD Layer
-        .with_sprite_sheet(
-            SpriteSheet::new("resources/sprite_sheet.png")
-                .add_sprite(Rect::with_size(0, 224, 32, 32))
-                .add_sprite(Rect::with_size(32, 224, 32, 32))
-                .add_sprite(Rect::with_size(64, 224, 32, 32))
-                .add_sprite(Rect::with_size(96, 224, 32, 32))
-                .add_sprite(Rect::with_size(128, 224, 32, 32))
-                .add_sprite(Rect::with_size(160, 224, 32, 32))
-                .add_sprite(Rect::with_size(192, 224, 32, 32))
-                .add_sprite(Rect::with_size(224, 224, 32, 32))
-
-                .add_sprite(Rect::with_size(0, 192, 32, 32))
-                .add_sprite(Rect::with_size(32, 192, 32, 32))
-                .add_sprite(Rect::with_size(64, 192, 32, 32))
-                .add_sprite(Rect::with_size(96, 192, 32, 32))
-                .add_sprite(Rect::with_size(128, 192, 32, 32))
-                .add_sprite(Rect::with_size(160, 192, 32, 32))
-                .add_sprite(Rect::with_size(192, 192, 32, 32))
-                .add_sprite(Rect::with_size(224, 192, 32, 32))
-
-                .add_sprite(Rect::with_size(0, 160, 32, 32))
-                .add_sprite(Rect::with_size(32, 160, 32, 32))
-                .add_sprite(Rect::with_size(64, 160, 32, 32))
-                .add_sprite(Rect::with_size(96, 160, 32, 32))
-                .add_sprite(Rect::with_size(128, 160, 32, 32))
-                .add_sprite(Rect::with_size(160, 160, 32, 32))
-                .add_sprite(Rect::with_size(192, 160, 32, 32))
-                .add_sprite(Rect::with_size(224, 160, 32, 32))
-
-                .add_sprite(Rect::with_size(0, 128, 32, 32))
-                .add_sprite(Rect::with_size(32, 128, 32, 32))
-                .add_sprite(Rect::with_size(64, 128, 32, 32))
-                .add_sprite(Rect::with_size(96, 128, 32, 32))
-                .add_sprite(Rect::with_size(128, 128, 32, 32))
-                .add_sprite(Rect::with_size(160, 128, 32, 32))
-                .add_sprite(Rect::with_size(192, 128, 32, 32))
-                .add_sprite(Rect::with_size(224, 128, 32, 32))
-        )
+        .with_sprite_sheet(SpriteSheet {
+            filename: "resources/sprite_sheet.png".to_string(),
+            sprites,
+            backing: None
+        })
         .with_vsync(false)
         .build()?;
     
