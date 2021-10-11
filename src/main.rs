@@ -199,6 +199,32 @@ impl GameState for State {
         ctx.cls();
         self.resources.insert(ctx.key);
         ctx.set_active_console(0);
+
+        let mut mouse_input = MouseInput {
+            mouse_point: Point::from_tuple(ctx.mouse_pos()),
+            left_click: ClickState::Unclicked
+        };
+
+        if let Some(old_input) = self.resources.get_mut::<MouseInput>() {
+            mouse_input.left_click = match old_input.left_click {
+                ClickState::Clicked => ClickState::Held,
+                ClickState::Released => ClickState::Unclicked,
+                _ => old_input.left_click
+            };
+        }
+
+        if ctx.left_click {
+            let old_state = mouse_input.left_click;
+            mouse_input.left_click = match old_state {
+                ClickState::Held => ClickState::Released,
+                ClickState::Unclicked => ClickState::Clicked,
+                _ => ClickState::Unclicked
+            };
+        }
+
+
+
+        self.resources.insert(mouse_input);
         self.resources.insert(Point::from_tuple(ctx.mouse_pos()));
         
         let current_state = self.resources.get::<TurnState>().unwrap().clone();

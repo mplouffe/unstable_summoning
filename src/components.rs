@@ -30,8 +30,22 @@ pub struct Description(pub String);
 pub struct Cursor;
 
 #[derive(Clone, Copy, PartialEq)]
+pub struct MouseInput {
+    pub mouse_point: Point,
+    pub left_click: ClickState,  
+}
+
+#[derive(Clone, Copy, PartialEq)]
 pub struct Liquid {
     pub color: LiquidColor,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum ClickState {
+    Unclicked,
+    Clicked,
+    Held,
+    Released
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
