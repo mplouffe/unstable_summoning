@@ -27,7 +27,9 @@ pub struct Name(pub String);
 pub struct Description(pub String);
 
 #[derive(Clone, Copy, PartialEq)]
-pub struct Cursor;
+pub struct Cursor {
+    pub is_active: bool,
+}
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct MouseInput {

@@ -25,7 +25,9 @@ pub fn spawn_player(ecs: &mut World) {
 pub fn spawn_cursor(ecs: &mut World) {
     ecs.push(
         (
-            Cursor { },
+            Cursor { 
+                is_active: false,
+            },
             Name("Cursor".to_string()),
             Point::new(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2),
             Render {

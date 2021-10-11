@@ -3,7 +3,7 @@ use crate::prelude::*;
 #[system]
 #[read_component(Point)]
 #[read_component(Name)]
-#[read_component(Player)]
+#[read_component(Cursor)]
 pub fn tooltips(
     ecs: &SubWorld,
     #[resource] mouse_pos: &Point,
