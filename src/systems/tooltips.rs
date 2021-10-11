@@ -8,7 +8,8 @@ pub fn tooltips(
     ecs: &SubWorld,
     #[resource] mouse_pos: &Point,
 ) {
-    let mut positions = <(Entity, &Point, &Name)>::query();
+    let mut positions = <(Entity, &Point, &Name)>::query()
+        .filter(!component::<Cursor>());
 
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(2);

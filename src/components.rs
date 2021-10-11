@@ -34,38 +34,30 @@ pub struct Liquid {
     pub color: LiquidColor,
 }
 
-#[derive(Clone, Copy, PartialEq)]
-pub struct Sludge {
-    pub color: SludgeColor,
-}
-
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
 pub enum LiquidColor {
-    Orange,
-    Pink,
     Red,
-    Grey,
-    White,
-    Yellow,
-    Purple,
-    Indigo,
-    BubbleGreen,
-    BubbleWhite,
-    BubblePink,
-    BubbleYellow,
-}
-
-#[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
-pub enum SludgeColor {
-    Gold,
-    Bronze,
-    Crimson,
-    RedPink,
-    Black,
-    Blue,
-    Brown,
-    BlueGreen,
-    Aqua,
-    DarkBlue,
     Green,
+    Blue,
+    Yellow,
+    Magenta,
+    Cyan,
+    White,
+    Black,
+    RedPink,
+    BlueGreen,
+    Lavendar,
+    Mustard,
+    Pink,
+    SickBlue,
+    Grey,
+    Orange,
+    Crimson,
+    Bronze,
+    DarkBlue,
+    Gold,
+    Peach,
+    GreyGreen,
+    Silver,
+    Copper
 }

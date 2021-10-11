@@ -6,29 +6,17 @@ use crate::prelude::*;
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
+    #[resource] mouse_pos: &Point,
     #[resource] key: &Option<VirtualKeyCode>,
-    #[resource] turn_state: &mut TurnState,
 ) 
 {
     let mut cursors = <(Entity, &Point)>::query()
         .filter(component::<Cursor>());
 
-    if let Some(key) = key {
-        let delta = match key {
-            VirtualKeyCode::Left => Point::new(-1, 0),
-            VirtualKeyCode::Right => Point::new(1, 0),
-            VirtualKeyCode::Up => Point::new(0, -1),
-            VirtualKeyCode::Down => Point::new(0, 1),
-            _ => Point::new(0,0),
-        };
-
-        let (cursor_entity, destination) = cursors
-            .iter(ecs)
-            .find_map(|(entity, pos)| Some((*entity, *pos + delta)))
-            .unwrap();
-        
-        commands.add_component(cursor_entity, destination);
-
-        *turn_state = TurnState::PlayerTurn;
-    }
+    let (cursor_entity, destination) = cursors
+        .iter(ecs)
+        .find_map(|(entity, _pos)| Some((*entity, *mouse_pos)))
+        .unwrap();
+    
+    commands.add_component(cursor_entity, destination);
 }
