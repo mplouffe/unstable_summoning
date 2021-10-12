@@ -14,7 +14,7 @@ pub fn hud(ecs: &SubWorld) {
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(HUD_LAYER);
     draw_batch.print_centered(1,
-        "Science the Chemicals, Arrow keys to move cursor, space to interact with item.");
+        "Hack the Planet! Click on disks interact with item.");
     draw_batch.bar_horizontal(
         Point::zero(),
         SCREEN_WIDTH*2,
@@ -38,7 +38,7 @@ pub fn hud(ecs: &SubWorld) {
     
     draw_batch.print_color_right(
         Point::new(SCREEN_WIDTH*2, (SCREEN_HEIGHT*2)-1),
-        format!("Science Level: {}", level+1),
+        format!("Hacker Level: {}", level+1),
         ColorPair::new(YELLOW, BLACK)
     );
 

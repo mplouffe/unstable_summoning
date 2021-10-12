@@ -6,7 +6,7 @@ use crate::prelude::*;
 #[read_component(Cursor)]
 pub fn tooltips(
     ecs: &SubWorld,
-    #[resource] mouse_pos: &Point,
+    #[resource] mouse_input: &MouseInput,
 ) {
     let mut positions = <(Entity, &Point, &Name)>::query()
         .filter(!component::<Cursor>());
@@ -16,9 +16,9 @@ pub fn tooltips(
     
     positions
         .iter(ecs)
-        .filter(|(_, pos, _)| **pos == *mouse_pos)
+        .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
         .for_each(|(entity, _, name)| {
-            let screen_pos = *mouse_pos * 4;
+            let screen_pos = mouse_input.mouse_point_bg * 4;
             let display = if let Ok(desc) = ecs.entry_ref(*entity)
                 .unwrap()
                 .get_component::<Description>()

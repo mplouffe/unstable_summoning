@@ -34,7 +34,10 @@ struct State {
     resources: Resources,
     input_systems: Schedule,
     player_systems: Schedule,
-    monster_systems: Schedule
+    monster_systems: Schedule,
+    game_start_systems: Schedule,
+    frame: usize,
+    timer: f32,
 }
 
 impl State {
@@ -42,23 +45,20 @@ impl State {
         let mut ecs = World::default();
         let mut resources = Resources::default();
         let map = Map::new();
-        let mut thread_rng = thread_rng();
-        spawn_player(&mut ecs);
-        spawn_cursor(&mut ecs);
-        let flask_positions = [ 
-            Point::new(2, 8),
-            Point::new(4, 8),
-            Point::new(6, 8),
-            Point::new(8, 8),
-            Point::new(11, 8),
-            Point::new(13, 8),
-            Point::new(15, 8),
-            Point::new(17, 8),
-        ];
-        spawn_flasks(&mut ecs, &mut thread_rng, &flask_positions);
+
+        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5]];
+        resources.insert(animations);
+
+        spawn_title_screen(&mut ecs);
 
         resources.insert(map);
         resources.insert(TurnState::GameStart);
+        let time_info = TimerInfo {
+            timer: 0.0,
+            frame: 0,
+        };
+
+        resources.insert(time_info);  
 
         Self {
             ecs,
@@ -66,6 +66,9 @@ impl State {
             input_systems: build_input_scheduler(),
             player_systems: build_player_scheduler(),
             monster_systems: build_monster_scheduler(),
+            game_start_systems: build_game_start_scheduler(),
+            frame: 0,
+            timer: 0.0,
         }
     }
 
@@ -89,34 +92,29 @@ impl State {
     }
 
     fn game_start(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(SPRITE_LAYER);
-        ctx.add_sprite(
-            Rect::with_size(576, 172, 128, 128),
-            1,
-            RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-            2
-        );
-        ctx.add_sprite(
-            Rect::with_size(566, 148, 128, 128),
-            10,
-            RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-            3
-        );
-
         ctx.set_active_console(HUD_LAYER);
-        ctx.print_color_centered(20, GREEN, BLACK, "ld49: Unstable Summoning.");
+        ctx.print_color_centered(20, GREEN, BLACK, "ld49: Unstable Trans-dimensional Hacking.");
         ctx.print_color_centered(25, WHITE, BLACK,
-            "Welcome to the lab.");
+            "Three years ago your Uncle Bill mysteriously disappeared...");
         ctx.print_color_centered(26, WHITE, BLACK,
-            "Combine elements and toss them into the Sciencefier!.");
+            "In his will he left you the keys to his 'lab' and a note...");
         ctx.print_color_centered(30, RED, BLACK,
-            "Don't worry, it's totally not powered by the dark arts.");
-        ctx.print_color_centered(35, GREEN, BLACK,
+            "'Only you can save us now!'");
+        ctx.print_color_centered(31, RED, BLACK,
+            "'Compile the codes. Perform the rituals. Hack the planet!!!'");
+        ctx.print_color_centered(32, RED, BLACK,
+            "'Don't worry. It's totally not powered by the Dark Arts...'");
+
+        ctx.print_color_centered(36, GREEN, BLACK,
             "Press space to play.");
         
+        self.game_start_systems.execute(&mut self.ecs, &mut self.resources);
+
         if let Some(VirtualKeyCode::Space) = ctx.key {
             self.reset_game_state();
         }
+
+        
     }
 
     // fn victory(&mut self, ctx: &mut BTerm) {
@@ -142,7 +140,10 @@ impl State {
         spawn_player(&mut self.ecs);
         spawn_cursor(&mut self.ecs);
 
-        let flask_positions = [ 
+        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5]];
+        self.resources.insert(animations);
+
+        let disk_positions = [ 
             Point::new(2, 8),
             Point::new(4, 8),
             Point::new(6, 8),
@@ -152,10 +153,19 @@ impl State {
             Point::new(15, 8),
             Point::new(17, 8),
         ];
-        spawn_flasks(&mut self.ecs, &mut thread_rng, &flask_positions);
+        let computer_positions = [
+            Point::new(5, 5),
+            Point::new(14, 5)
+        ];
+
+        spawn_disks(&mut self.ecs, &mut thread_rng, &disk_positions);
+        spawn_computers(&mut self.ecs, &computer_positions);
+        spawn_infrastructure(&mut self.ecs);
 
         self.resources.insert(map);
         self.resources.insert(TurnState::AwaitingInput);
+        self.timer = 0.0;
+        self.frame = 0;
     }
 
     // fn advance_level(&mut self) {
@@ -200,8 +210,13 @@ impl GameState for State {
         self.resources.insert(ctx.key);
         ctx.set_active_console(0);
 
+        let mouse_pos_bg_layer = ctx.mouse_pos();
+        ctx.set_active_console(2);
+        let mouse_pos_hud_layer = ctx.mouse_pos();
+
         let mut mouse_input = MouseInput {
-            mouse_point: Point::from_tuple(ctx.mouse_pos()),
+            mouse_point_bg: Point::from_tuple(mouse_pos_bg_layer),
+            mouse_point_hud: Point::from_tuple(mouse_pos_hud_layer),
             left_click: ClickState::Unclicked
         };
 
@@ -221,11 +236,19 @@ impl GameState for State {
                 _ => ClickState::Unclicked
             };
         }
-
-
-
         self.resources.insert(mouse_input);
-        self.resources.insert(Point::from_tuple(ctx.mouse_pos()));
+
+        self.timer += ctx.frame_time_ms;
+        if self.timer > 66.0 {
+            self.timer = 0.0;
+            self.frame += 1;
+        }
+        let time_info = TimerInfo {
+            timer: self.timer,
+            frame: self.frame,
+        };
+
+        self.resources.insert(time_info);     
         
         let current_state = self.resources.get::<TurnState>().unwrap().clone();
         match current_state {

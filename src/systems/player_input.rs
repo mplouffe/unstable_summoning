@@ -5,7 +5,7 @@ use crate::prelude::*;
 #[read_component(Name)]
 #[write_component(Cursor)]
 #[read_component(Player)]
-#[read_component(Liquid)]
+#[read_component(Disk)]
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
@@ -22,10 +22,10 @@ pub fn player_input(
         .unwrap();
     
     if !cursor.is_active {
-        commands.add_component(cursor_entity, mouse_input.mouse_point);
+        commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
     }
 
-    // 
+    // click on things
     match mouse_input.left_click {
         ClickState::Released => {
             let mut positions = <(Entity, &Point, &Name)>::query()
@@ -34,15 +34,16 @@ pub fn player_input(
             let mut cursor_target_updated = false;
             positions
                 .iter(ecs)
-                .filter(|(_, pos, _)| **pos == mouse_input.mouse_point)
+                .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
                 .for_each(|(entity, pos, name)| {
                     let entity_ref = ecs.entry_ref(*entity).unwrap();
 
-                    if let Ok(liquid) = entity_ref.get_component::<Liquid>()
+                    if let Ok(disk) = entity_ref.get_component::<Disk>()
                     {
                         cursor.is_active = true;
                         cursor_target_updated = true;
-                    } else if let Ok(player) = entity_ref.get_component::<Player>()
+                    }
+                    else if let Ok(player) = entity_ref.get_component::<Player>()
                     {
                         cursor.is_active = true;
                         cursor_target_updated = true;
@@ -51,12 +52,12 @@ pub fn player_input(
             
             if cursor_target_updated {
                 commands.add_component(cursor_entity, cursor);
-                commands.add_component(cursor_entity, mouse_input.mouse_point);
+                commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
             } else {
                 if cursor.is_active {
                     cursor.is_active = false;
                     commands.add_component(cursor_entity, cursor);
-                    commands.add_component(cursor_entity, mouse_input.mouse_point);
+                    commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
                 }
             }
         },

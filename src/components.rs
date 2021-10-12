@@ -4,9 +4,11 @@ use strum_macros::EnumIter;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Render {
+    pub render: bool,
     pub tint: RGBA,
     pub z_order: i32,
     pub index: usize,
+    pub scale: (i32, i32),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -32,14 +34,38 @@ pub struct Cursor {
 }
 
 #[derive(Clone, Copy, PartialEq)]
+pub struct Popup;
+
+#[derive(Clone, Copy, PartialEq)]
 pub struct MouseInput {
-    pub mouse_point: Point,
+    pub mouse_point_bg: Point,
+    pub mouse_point_hud: Point,
     pub left_click: ClickState,  
 }
 
 #[derive(Clone, Copy, PartialEq)]
-pub struct Liquid {
-    pub color: LiquidColor,
+pub struct Computer {
+    pub computer_state: ComputerState
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum ComputerState {
+    Unloaded,
+    Loaded,
+    Compiling,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct Disk {
+    pub color: DiskColor,
+    pub disk_state: DiskState,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum DiskState {
+    Untouched,
+    Grabbed,
+    Loaded,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -51,29 +77,55 @@ pub enum ClickState {
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
-pub enum LiquidColor {
-    Red,
-    Green,
+pub enum Actions {
+    Look,
+    Touch,
+    Grab,   // all actions post here require FlaskState == Grabbed
+    Smell,
+    Swirl,
+    Taste,
+    Shake,
+}
+
+#[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
+pub enum DiskColor {
     Blue,
     Yellow,
-    Magenta,
-    Cyan,
-    White,
-    Black,
-    RedPink,
-    BlueGreen,
-    Lavendar,
-    Mustard,
-    Pink,
-    SickBlue,
-    Grey,
+    Green,
+    Red,
     Orange,
-    Crimson,
-    Bronze,
-    DarkBlue,
-    Gold,
-    Peach,
-    GreyGreen,
+    Purple,
+    Aqua,
+    NeonGreen,
+    Black,
     Silver,
-    Copper
+    Copper,
+    NeonPink,
+    Crimson,
+    BlueGreen,
+    Magenta,
+    Gold
+}
+
+#[derive(Clone, Copy)]
+pub struct TimerInfo {
+    pub frame: usize,
+    pub timer: f32,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct Animation {
+    pub state: AnimationState,
+    pub starting_frame: usize,
+    pub loop_play: bool,
+    pub animation_index: usize,
+    pub final_frame: usize,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum AnimationState {
+    Start,
+    Playing,
+    Stopping,
+    Stopped,
 }
