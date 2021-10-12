@@ -9,7 +9,6 @@ use crate::prelude::*;
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
-    #[resource] key: &Option<VirtualKeyCode>,
     #[resource] mouse_input: &MouseInput,
 ) 
 {
@@ -18,7 +17,7 @@ pub fn player_input(
 
     let (cursor_entity, mut cursor) = cursors
         .iter(ecs)
-        .find_map(|(entity, mut cursor)| Some((*entity, *cursor)))
+        .find_map(|(entity, cursor)| Some((*entity, *cursor)))
         .unwrap();
     
     if !cursor.is_active {
@@ -35,15 +34,15 @@ pub fn player_input(
             positions
                 .iter(ecs)
                 .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
-                .for_each(|(entity, pos, name)| {
+                .for_each(|(entity, _pos, _name)| {
                     let entity_ref = ecs.entry_ref(*entity).unwrap();
 
-                    if let Ok(disk) = entity_ref.get_component::<Disk>()
+                    if let Ok(_disk) = entity_ref.get_component::<Disk>()
                     {
                         cursor.is_active = true;
                         cursor_target_updated = true;
                     }
-                    else if let Ok(player) = entity_ref.get_component::<Player>()
+                    else if let Ok(_player) = entity_ref.get_component::<Player>()
                     {
                         cursor.is_active = true;
                         cursor_target_updated = true;

@@ -14,7 +14,7 @@ pub fn popup_render(
     
     positions
         .iter(ecs)
-        .for_each(|(entity, pos, cursor)| {
+        .for_each(|(_entity, pos, _cursor)| {
             let offset_x = (pos.x *4) + 4;
             let position_y = pos.y * 4;
 

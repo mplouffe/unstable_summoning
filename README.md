@@ -1,11 +1,15 @@
-# ld49: Unstable Summoning
-A console game about chemical reactions and summoning demons.
+# ld49: Unstable Trans-Dimensional Hacking
+A console game about hacking and summoning demons.
 
 <p align="center">
-  <img src="/docs/title_screen_v01.png" title="Unstable Summoning Title Screen">
+  <img src="/docs/menu_screen.gif" title="Unstable Trans-Dimensional Hacking Title Screen">
 </p>
 
 Made in rust using bracket-lib and legion.
+
+<p align="center">
+  <img src="/docs/game_screen.gif" title="Unstable Trans-Dimensional Hacking Game Screen">
+</p>
 
 
 NOTE: THIS REQUIRES A DIRTY HACK TO RUN PROPERLY <br>
