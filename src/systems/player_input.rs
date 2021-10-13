@@ -41,6 +41,12 @@ pub fn player_input(
                     {
                         cursor.is_active = true;
                         cursor_target_updated = true;
+                        commands.push(((), PopupRequest {
+                                popup_type: PopupType::ActionsInput,
+                                open: true,
+                            },
+                            Point::new(2, 5)
+                    ));
                     }
                     else if let Ok(_player) = entity_ref.get_component::<Player>()
                     {
@@ -57,6 +63,12 @@ pub fn player_input(
                     cursor.is_active = false;
                     commands.add_component(cursor_entity, cursor);
                     commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
+                    commands.push(((), PopupRequest {
+                            popup_type: PopupType::ActionsInput,
+                            open: false,
+                        },
+                        Point::zero()
+                    ));
                 }
             }
         },

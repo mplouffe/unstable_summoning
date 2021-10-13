@@ -34,6 +34,18 @@ pub struct Cursor {
 }
 
 #[derive(Clone, Copy, PartialEq)]
+pub enum PopupType {
+    ActionsInput,
+    TextOutput,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct PopupRequest {
+    pub popup_type: PopupType,
+    pub open: bool,
+}
+
+#[derive(Clone, Copy, PartialEq)]
 pub struct Popup;
 
 #[derive(Clone, Copy, PartialEq)]

@@ -18,7 +18,7 @@ pub fn tooltips(
         .iter(ecs)
         .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
         .for_each(|(entity, _, name)| {
-            let screen_pos = mouse_input.mouse_point_bg * 4;
+            let screen_pos = Point::new(mouse_input.mouse_point_bg.x * 4, (mouse_input.mouse_point_bg.y*4)-2);
             let display = if let Ok(desc) = ecs.entry_ref(*entity)
                 .unwrap()
                 .get_component::<Description>()
