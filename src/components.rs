@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-use strum_macros::EnumIter;
+use strum_macros::{EnumIter, AsStaticStr};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Render {
@@ -45,8 +45,12 @@ pub struct PopupRequest {
     pub open: bool,
 }
 
-#[derive(Clone, Copy, PartialEq)]
-pub struct Popup;
+#[derive(Clone, PartialEq)]
+pub struct Popup {
+    pub options: Vec<Actions>,
+    pub width: i32,
+    pub height: i32,
+}
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct MouseInput {
@@ -88,15 +92,14 @@ pub enum ClickState {
     Released
 }
 
-#[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
+#[derive(Clone, Copy, PartialEq, Debug, EnumIter, AsStaticStr)]
 pub enum Actions {
     Look,
-    Touch,
-    Grab,   // all actions post here require FlaskState == Grabbed
-    Smell,
-    Swirl,
-    Taste,
-    Shake,
+    RubberDuck,
+    Load,   // all actions post here require DiskState == Grabbed
+    Compile,
+    StackDump,
+    Run,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]

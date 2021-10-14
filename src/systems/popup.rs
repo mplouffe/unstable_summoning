@@ -20,7 +20,11 @@ pub fn popup(
                     if request.open {
                         commands.push(((),
                             pos.clone(),
-                            Popup{}
+                            Popup {
+                                options: vec![Actions::Look, Actions::RubberDuck, Actions::Load],
+                                width: 12,
+                                height: 8,
+                            }
                         ));
                     } else {
                         close_popup = true;

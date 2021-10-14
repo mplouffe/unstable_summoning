@@ -1,5 +1,7 @@
 use crate::prelude::*;
 
+use strum::AsStaticRef;
+
 #[system]
 #[read_component(Point)]
 #[read_component(Name)]
@@ -14,42 +16,23 @@ pub fn popup_render(
     draw_batch.target(HUD_LAYER);
     positions
         .iter(ecs)
-        .for_each(|(_entity, pos, _cursor)| {
+        .for_each(|(_entity, pos, popup)| {
             
-            draw_batch.draw_box(Rect::with_size(pos.x, pos.y, 12, 8), ColorPair::new(WHITE, BLACK));
+            draw_batch.draw_box(Rect::with_size(pos.x, pos.y, popup.width, popup.height), ColorPair::new(GREEN, BLACK));
             
+            let num_options: i32 = popup.options.len() as i32;
             let in_x_range = mouse_input.mouse_point_hud.x >= pos.x+1 && mouse_input.mouse_point_hud.x <= pos.x+11;
-            let in_y_range = mouse_input.mouse_point_hud.y >= pos.y+1 && mouse_input.mouse_point_hud.y <= pos.y+4;
+            let in_y_range = mouse_input.mouse_point_hud.y >= pos.y+1 && mouse_input.mouse_point_hud.y <= pos.y + num_options;
             let mut hovered_index = -1;
-            let highlighted = ColorPair::new(RED, BLACK);
+
             if in_x_range && in_y_range {
                 hovered_index = mouse_input.mouse_point_hud.y - (pos.y+1);
             }
-            
-            if hovered_index == 0 {
-                draw_batch.print_color(Point::new(pos.x+1, pos.y+1), "LOOK", highlighted);
-            } else {
-                draw_batch.print(Point::new(pos.x+1, pos.y+1), "LOOK");
-            }
- 
-            if hovered_index == 1 {
-                draw_batch.print_color(Point::new(pos.x+1, pos.y+2), "LOAD", highlighted);
-            } else {
-                draw_batch.print(Point::new(pos.x+1, pos.y+2), "LOAD");
-            }
 
-            if hovered_index == 2 {
-                draw_batch.print_color(Point::new(pos.x+1, pos.y+3), "COMPILE", highlighted);
-            } else {
-                draw_batch.print(Point::new(pos.x+1, pos.y+3), "COMPILE");
+            for i in 0..num_options {
+                let color = if i == hovered_index { ColorPair::new(RED, BLACK) } else { ColorPair::new(GREEN, BLACK) };
+                draw_batch.print_color(Point::new(pos.x+1, pos.y+(i+1)), popup.options[i as usize].as_static(),color);
             }
-
-            if hovered_index == 3 {
-                draw_batch.print_color(Point::new(pos.x+1, pos.y+4), "STACK DUMP", highlighted);
-            } else {
-                draw_batch.print(Point::new(pos.x+1, pos.y+4), "STACK DUMP");
-            }
-
         });
     draw_batch.submit(10100).expect("Batch error");
 }
