@@ -29,6 +29,7 @@ pub fn spawn_cursor(ecs: &mut World) {
         (
             Cursor { 
                 is_active: false,
+                popup_open: false,
             },
             Name("Cursor".to_string()),
             Point::new(DISPLAY_WIDTH/2, DISPLAY_HEIGHT/2),

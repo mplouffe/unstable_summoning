@@ -1,6 +1,6 @@
 pub use crate::prelude::*;
 
-use strum_macros::{EnumIter, AsStaticStr};
+use strum_macros::EnumIter;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Render {
@@ -31,11 +31,12 @@ pub struct Description(pub String);
 #[derive(Clone, Copy, PartialEq)]
 pub struct Cursor {
     pub is_active: bool,
+    pub popup_open: bool,
 }
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum PopupType {
-    ActionsInput,
+    UnloadedDisk,
     TextOutput,
 }
 
@@ -43,13 +44,16 @@ pub enum PopupType {
 pub struct PopupRequest {
     pub popup_type: PopupType,
     pub open: bool,
+    pub target: Option<Entity>,
 }
 
 #[derive(Clone, PartialEq)]
 pub struct Popup {
-    pub options: Vec<Actions>,
+    pub popup_type: PopupType,
+    pub options: Vec<Button>,
     pub width: i32,
     pub height: i32,
+    pub target: Option<Entity>,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -92,7 +96,7 @@ pub enum ClickState {
     Released
 }
 
-#[derive(Clone, Copy, PartialEq, Debug, EnumIter, AsStaticStr)]
+#[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
 pub enum Actions {
     Look,
     RubberDuck,
@@ -143,4 +147,16 @@ pub enum AnimationState {
     Playing,
     Stopping,
     Stopped,
+}
+
+#[derive(Clone, PartialEq)]
+pub struct Button {
+    pub action: Actions,
+    pub button_area: Rect,
+    pub text: String,
+}
+
+pub struct ActionRequest {
+    pub action: Actions,
+    pub target: Option<Entity>,
 }

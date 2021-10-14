@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-use strum::AsStaticRef;
-
 #[system]
 #[read_component(Point)]
 #[read_component(Name)]
@@ -20,19 +18,16 @@ pub fn popup_render(
             
             draw_batch.draw_box(Rect::with_size(pos.x, pos.y, popup.width, popup.height), ColorPair::new(GREEN, BLACK));
             
-            let num_options: i32 = popup.options.len() as i32;
-            let in_x_range = mouse_input.mouse_point_hud.x >= pos.x+1 && mouse_input.mouse_point_hud.x <= pos.x+11;
-            let in_y_range = mouse_input.mouse_point_hud.y >= pos.y+1 && mouse_input.mouse_point_hud.y <= pos.y + num_options;
-            let mut hovered_index = -1;
-
-            if in_x_range && in_y_range {
-                hovered_index = mouse_input.mouse_point_hud.y - (pos.y+1);
-            }
-
-            for i in 0..num_options {
-                let color = if i == hovered_index { ColorPair::new(RED, BLACK) } else { ColorPair::new(GREEN, BLACK) };
-                draw_batch.print_color(Point::new(pos.x+1, pos.y+(i+1)), popup.options[i as usize].as_static(),color);
-            }
+            popup.options.iter()
+                .for_each(|option| {
+                    let color;
+                    if option.button_area.point_in_rect(mouse_input.mouse_point_hud) {
+                        color = ColorPair::new(RED, BLACK);
+                    } else {
+                        color = ColorPair::new(GREEN, BLACK);
+                    }
+                    draw_batch.print_color(Point::new(option.button_area.x1, option.button_area.y1), option.text.clone(), color);
+                });
         });
     draw_batch.submit(10100).expect("Batch error");
 }
