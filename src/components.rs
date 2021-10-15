@@ -156,6 +156,7 @@ pub struct Button {
     pub text: String,
 }
 
+#[derive(Clone)]
 pub struct ActionRequest {
     pub action: Actions,
     pub target: Option<Entity>,

@@ -1,6 +1,7 @@
 use crate::prelude::*;
 
 mod animation;
+mod action;
 mod cursor_render;
 mod map_render;
 mod end_turn;
@@ -16,6 +17,7 @@ pub fn build_input_scheduler() -> Schedule {
     Schedule::builder()
         .add_system(animation::animation_system())
         .add_system(player_input::player_input_system())
+        .add_system(action::action_system())
         .add_system(map_render::map_render_system())
         .add_system(animation::animation_system())
         .add_system(popup::popup_system())
