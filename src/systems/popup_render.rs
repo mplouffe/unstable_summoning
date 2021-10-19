@@ -15,7 +15,6 @@ pub fn popup_render(
     positions
         .iter(ecs)
         .for_each(|(_entity, pos, popup)| {
-            
             draw_batch.draw_box(Rect::with_size(pos.x, pos.y, popup.width, popup.height), ColorPair::new(GREEN, BLACK));
             
             popup.options.iter()
@@ -28,6 +27,15 @@ pub fn popup_render(
                     }
                     draw_batch.print_color(Point::new(option.button_area.x1, option.button_area.y1), option.text.clone(), color);
                 });
+            
+            match popup.popup_type {
+                PopupType::TextOutput => {
+                    if let Some(popup_text) = &popup.text {
+                        draw_batch.print_color(Point::new(pos.x +1, pos.y+1), popup_text.clone(), ColorPair::new(GREEN, BLACK));
+                    }
+                },
+                _ => {}
+            }
         });
     draw_batch.submit(10100).expect("Batch error");
 }

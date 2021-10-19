@@ -40,11 +40,12 @@ pub enum PopupType {
     TextOutput,
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub struct PopupRequest {
     pub popup_type: PopupType,
     pub open: bool,
     pub target: Option<Entity>,
+    pub text: Option<String>,
 }
 
 #[derive(Clone, PartialEq)]
@@ -54,6 +55,7 @@ pub struct Popup {
     pub width: i32,
     pub height: i32,
     pub target: Option<Entity>,
+    pub text: Option<String>,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -75,10 +77,11 @@ pub enum ComputerState {
     Compiling,
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub struct Disk {
     pub color: DiskColor,
     pub disk_state: DiskState,
+    pub disk_label: String,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -99,11 +102,12 @@ pub enum ClickState {
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
 pub enum Actions {
     Look,
-    RubberDuck,
+    Smell,
     Load,   // all actions post here require DiskState == Grabbed
     Compile,
     StackDump,
     Run,
+    CloseWindow,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]

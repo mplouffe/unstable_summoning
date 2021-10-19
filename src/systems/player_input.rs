@@ -48,6 +48,7 @@ pub fn player_input(
                                             popup_type: popup.popup_type,
                                             open: false,
                                             target: None,
+                                            text: None,
                                         },
                                         Point::zero()
                                     ));
@@ -81,6 +82,7 @@ pub fn player_input(
                                     popup_type: PopupType::UnloadedDisk,
                                     open: true,
                                     target: Some(*entity),
+                                    text: None,
                                 },
                                 Point::new(2, 5)
                             ));
@@ -105,6 +107,7 @@ pub fn player_input(
                                 popup_type: PopupType::UnloadedDisk,
                                 open: false,
                                 target: None,
+                                text: None,
                             },
                             Point::zero()
                         ));

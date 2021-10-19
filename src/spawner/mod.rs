@@ -52,7 +52,8 @@ pub fn spawn_disks(ecs: &mut World, rng: &mut ThreadRng, disk_positions: &[Point
         .for_each(|(pos, disk_color)| {
             let disk = Disk { 
                 color: disk_color,
-                disk_state: DiskState::Untouched, 
+                disk_state: DiskState::Untouched,
+                disk_label: "This is the label description".to_string(),
             };
             ecs.push(
                 (
