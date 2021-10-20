@@ -4,6 +4,7 @@ use crate::prelude::*;
 #[write_component(ActionRequest)]
 #[write_component(Computer)]
 #[write_component(Render)]
+#[read_component(Disk)]
 pub fn action(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
@@ -15,14 +16,10 @@ pub fn action(
         .for_each(|(entity, action_request)| {
             match action_request.action {
                 Actions::Look => {
-                    println!("Look selected and handled");
                     if let Some(target_entity) = &action_request.target {
-                        println!("found target entity");
                         let entity_ref = ecs.entry_ref(*target_entity).unwrap();
-                        
                         if let Ok(disk) = entity_ref.get_component::<Disk>()
                         {
-                            println!("got disk, creating text popup");
                             commands.push(((),
                                 Point::new(10, 5),
                                 PopupRequest {
@@ -57,7 +54,9 @@ pub fn action(
                             open: false,
                             target: None,
                             text: None,
-                        }));
+                        },
+                        Point::zero(),
+                    ));
                 }
             }
 

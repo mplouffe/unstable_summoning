@@ -29,38 +29,50 @@ pub fn player_input(
     match mouse_input.left_click {
         ClickState::Released => {
             let mut click_consumed = false;
-            if cursor.popup_open {
-                let mut popups = <&Popup>::query();
 
-                popups
-                    .iter(ecs)
-                    .for_each(|popup| {
-                        popup.options.iter()
-                            .for_each(|option| {
-                                if option.button_area.point_in_rect(mouse_input.mouse_point_hud) {
-                                    click_consumed = true;
-                                    cursor.is_active = false;
-                                    cursor.popup_open = false;
+            let mut popups = <(Entity, &Popup)>::query();
 
-                                    commands.add_component(cursor_entity, cursor);
-                                    commands.push(((),
-                                        PopupRequest {
-                                            popup_type: popup.popup_type,
-                                            open: false,
-                                            target: None,
-                                            text: None,
-                                        },
-                                        Point::zero()
-                                    ));
-                                    commands.push(((),
-                                        ActionRequest {
-                                            target: popup.target,
-                                            action: option.action,
-                                    }));
+            popups
+                .iter(ecs)
+                .for_each(|(entity, popup)| {
+                    popup.options.iter()
+                        .for_each(|option| {
+                            if option.button_area.point_in_rect(mouse_input.mouse_point_hud) {
+                                match option.action {
+                                    Actions::CloseWindow => {
+                                        commands.push(((),
+                                            ActionRequest {
+                                                target: Some(*entity),
+                                                action: option.action,
+                                        }));
+                                    },
+                                    _ => {
+                                        click_consumed = true;
+                                        cursor.is_active = false;
+    
+                                        commands.add_component(cursor_entity, cursor);
+                                        commands.push(((),
+                                            PopupRequest {
+                                                popup_type: popup.popup_type,
+                                                open: false,
+                                                target: None,
+                                                text: None,
+                                            },
+                                            Point::zero()
+                                        ));
+                                        commands.push(((),
+                                            ActionRequest {
+                                                target: popup.target,
+                                                action: option.action,
+                                        }));
+                                    }
                                 }
-                            });
-                    });
-            }
+
+                            }
+                        }
+                    );
+                }
+            );
 
             if !click_consumed {
                 let mut positions = <(Entity, &Point, &Name)>::query()
@@ -69,14 +81,12 @@ pub fn player_input(
                 let mut cursor_target_updated = false;
                 positions
                     .iter(ecs)
-                    .filter(|(entity, pos, _)| **pos == mouse_input.mouse_point_bg)
+                    .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
                     .for_each(|(entity, _pos, _name)| {
                         let entity_ref = ecs.entry_ref(*entity).unwrap();
-
                         if let Ok(_disk) = entity_ref.get_component::<Disk>()
                         {
                             cursor.is_active = true;
-                            cursor.popup_open = true;
                             cursor_target_updated = true;
                             commands.push(((), PopupRequest {
                                     popup_type: PopupType::UnloadedDisk,
@@ -100,7 +110,6 @@ pub fn player_input(
                 } else {
                     if cursor.is_active {
                         cursor.is_active = false;
-                        cursor.popup_open = false;
                         commands.add_component(cursor_entity, cursor);
                         commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
                         commands.push(((), PopupRequest {

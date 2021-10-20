@@ -15,7 +15,6 @@ pub fn popup(
     requests
         .iter(ecs)
         .for_each(|(entity, pos, request)| {
-            println!("Handling popup request");
             if !request.open {
                 popups_to_close.push(request.popup_type);
             }
@@ -23,7 +22,6 @@ pub fn popup(
             {
                 match request.popup_type {
                     PopupType::UnloadedDisk => {
-                        println!("handling unloaded disk popup request");
                         let mut buttons = Vec::new();
                         buttons.push(Button {
                             action: Actions::Look,
@@ -53,7 +51,6 @@ pub fn popup(
                         ));
                     },
                     PopupType::TextOutput => {
-                        println!("Handling text output");
                         let mut buttons = Vec::new();
                         buttons.push(Button {
                             action: Actions::CloseWindow,
@@ -80,13 +77,15 @@ pub fn popup(
             commands.remove(*entity);        
         });
 
-    let mut popups = <(Entity, &Popup)>::query();
+    if popups_to_close.len() > 0 {
+        let mut popups = <(Entity, &Popup)>::query();
 
-    popups
-        .iter(ecs)
-        .for_each(|(entity, popup)| {
-            if popups_to_close.iter().any(|pops_to_close|  *pops_to_close == popup.popup_type) {
-                commands.remove(*entity);
-            }
-        });
+        popups
+            .iter(ecs)
+            .for_each(|(entity, popup)| {
+                if popups_to_close.iter().any(|pops_to_close|  *pops_to_close == popup.popup_type) {
+                    commands.remove(*entity);
+                }
+            });
+    }
 }

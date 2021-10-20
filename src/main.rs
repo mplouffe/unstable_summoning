@@ -283,7 +283,7 @@ fn main() -> BError {
         .with_font("unstablefont.png", 32, 32)
         .with_font("terminal8x8.png", 8, 8)
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")                 // BG
-        .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)      // Sprite Layer
+        .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)       // Sprite Layer
         .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")          // HUD Layer
         .with_sprite_sheet(SpriteSheet {
             filename: "resources/sprite_sheet.png".to_string(),
