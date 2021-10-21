@@ -23,13 +23,6 @@ pub fn cursor_render(
                     render.tint,
                     render.index + 1,
                 );
-            } else {
-                draw_batch.set_sprite(
-                    Rect::with_size(pos.x*TILE_SIZE, pos.y*TILE_SIZE, 64, 64),
-                    render.z_order,
-                    render.tint,
-                    render.index,
-                );
             }
         }
     );

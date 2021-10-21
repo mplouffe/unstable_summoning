@@ -43,15 +43,20 @@ pub enum PopupType {
 #[derive(Clone, PartialEq)]
 pub struct PopupRequest {
     pub popup_type: PopupType,
-    pub open: bool,
     pub target: Option<Entity>,
     pub text: Option<String>,
+}
+
+#[derive(Clone, PartialEq)]
+pub struct ClosePopupRequest {
+    pub target: Option<Entity>
 }
 
 #[derive(Clone, PartialEq)]
 pub struct Popup {
     pub popup_type: PopupType,
     pub options: Vec<Button>,
+    pub bounding_box: Rect,
     pub width: i32,
     pub height: i32,
     pub target: Option<Entity>,

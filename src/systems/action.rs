@@ -24,7 +24,6 @@ pub fn action(
                                 Point::new(10, 5),
                                 PopupRequest {
                                     popup_type: PopupType::TextOutput,
-                                    open: true,
                                     target: None,
                                     text: Some(disk.disk_label.clone()),
                                 }
@@ -48,15 +47,13 @@ pub fn action(
                     println!("Run action selected and handled");
                 },
                 Actions::CloseWindow => {
-                    commands.push(((),
-                        PopupRequest {
-                            popup_type: PopupType::TextOutput,
-                            open: false,
-                            target: None,
-                            text: None,
-                        },
-                        Point::zero(),
-                    ));
+                    if let Some(popup_entity) = action_request.target {
+                        commands.push(((),
+                            ClosePopupRequest {
+                                target: Some(popup_entity)
+                            }
+                        ));
+                    }
                 }
             }
 
