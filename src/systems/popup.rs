@@ -50,7 +50,7 @@ pub fn popup(
                     let mut buttons = Vec::new();
                     buttons.push(Button {
                         action: Actions::CloseWindow,
-                        button_area: Rect::with_size(pos.x+20, pos.y+20, 10, 1),
+                        button_area: Rect::with_size(pos.x+25, pos.y+9, 10, 1),
                         text: "CLOSE".to_string(),
                     });
 
@@ -60,9 +60,9 @@ pub fn popup(
                             Popup {
                                 popup_type: request.popup_type,
                                 options: buttons,
-                                bounding_box: Rect::with_size(pos.x, pos.y, 30, 30),
+                                bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
                                 width: 30,
-                                height: 30,
+                                height: 10,
                                 target: None,
                                 text: Some(popup_text.clone()),
                             }));

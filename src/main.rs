@@ -18,6 +18,7 @@ mod prelude {
     pub const BG_LAYER: usize = 0;
     pub const SPRITE_LAYER: usize = 1;
     pub const HUD_LAYER: usize = 2;
+    pub const POPUP_LAYER: usize = 3;
 
     pub use crate::turn_state::*;
     pub use crate::map::*;
@@ -207,6 +208,8 @@ impl GameState for State {
         ctx.cls();
         ctx.set_active_console(2);
         ctx.cls();
+        ctx.set_active_console(3);
+        ctx.cls();
         self.resources.insert(ctx.key);
         ctx.set_active_console(0);
 
@@ -285,6 +288,7 @@ fn main() -> BError {
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")                 // BG
         .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)       // Sprite Layer
         .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")          // HUD Layer
+        .with_sparse_console(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")                // Popup Layer
         .with_sprite_sheet(SpriteSheet {
             filename: "resources/sprite_sheet.png".to_string(),
             sprites,

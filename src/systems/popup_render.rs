@@ -11,7 +11,7 @@ pub fn popup_render(
     let mut positions = <(Entity, &Point, &Popup)>::query();
 
     let mut draw_batch = DrawBatch::new();
-    draw_batch.target(HUD_LAYER);
+    draw_batch.target(POPUP_LAYER);
     positions
         .iter(ecs)
         .for_each(|(_entity, pos, popup)| {
@@ -30,8 +30,14 @@ pub fn popup_render(
             
             match popup.popup_type {
                 PopupType::TextOutput => {
-                    if let Some(popup_text) = &popup.text {
-                        draw_batch.print_color(Point::new(pos.x +1, pos.y+1), popup_text.clone(), ColorPair::new(GREEN, BLACK));
+                    if let Some(popup_text_lines) = &popup.text {
+                        let mut y_offset = 1;
+                        popup_text_lines.iter()
+                            .for_each(|popup_text| {
+                                draw_batch.print_color(Point::new(pos.x +1, pos.y+y_offset), popup_text.clone(), ColorPair::new(GREEN, BLACK));
+                                y_offset += 1;
+                            }
+                        );                   
                     }
                 },
                 _ => {}

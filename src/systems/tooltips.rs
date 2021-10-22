@@ -12,7 +12,7 @@ pub fn tooltips(
         .filter(!component::<Cursor>());
 
     let mut draw_batch = DrawBatch::new();
-    draw_batch.target(2);
+    draw_batch.target(HUD_LAYER);
     
     positions
         .iter(ecs)
@@ -29,5 +29,5 @@ pub fn tooltips(
             };
             draw_batch.print(screen_pos, &display);
         });
-    draw_batch.submit(10100).expect("Batch error");
+    draw_batch.submit(10000).expect("Batch error");
 }

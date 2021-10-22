@@ -31,10 +31,10 @@ pub fn player_input(
                 .iter(ecs)
                 .filter(|(_, popup)| popup.bounding_box.point_in_rect(mouse_input.mouse_point_hud))
                 .for_each(|(entity, popup)| {
+                    click_consumed = true;
                     popup.options.iter()
                         .filter(|option| option.button_area.point_in_rect(mouse_input.mouse_point_hud))
                         .for_each(|option| {
-                            click_consumed = true;  
                             match option.action {
                                 Actions::CloseWindow => {
                                     commands.push(((),
@@ -42,6 +42,24 @@ pub fn player_input(
                                             target: Some(*entity),
                                             action: option.action,
                                     }));
+                                    cursor.is_active = false;
+                                    commands.add_component(cursor_entity, cursor);
+                                },
+                                Actions::Load => {
+                                    commands.push(((),
+                                        ActionRequest {
+                                            target: Some(*entity),
+                                            action: Actions::CloseWindow,
+                                        }
+                                    ));
+                                    commands.push(((),
+                                        ActionRequest {
+                                            target: popup.target,
+                                            action: option.action
+                                        }
+                                    ));
+                                    cursor.is_active = false;
+                                    commands.add_component(cursor_entity, cursor);
                                 },
                                 _ => {  
                                     commands.push(((),

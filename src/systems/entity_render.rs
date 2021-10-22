@@ -7,7 +7,8 @@ use crate::prelude::*;
 pub fn entity_render(
     ecs: &SubWorld
 ) {
-    let mut renderables = <(&Point, &Render)>::query();
+    let mut renderables = <(&Point, &Render)>::query()
+        .filter(!component::<Cursor>() & !component::<Computer>());
 
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(SPRITE_LAYER);

@@ -15,7 +15,6 @@ pub fn cursor_render(
     renderables
         .iter(ecs)
         .for_each(|(pos, render, cursor)| {
-
             if cursor.is_active {
                 draw_batch.set_sprite(
                     Rect::with_size(pos.x*TILE_SIZE, pos.y*TILE_SIZE, 64, 64),
@@ -27,5 +26,5 @@ pub fn cursor_render(
         }
     );
 
-    draw_batch.submit(5000).expect("Batch error");
+    draw_batch.submit(6000).expect("Batch error");
 }

@@ -44,7 +44,7 @@ pub enum PopupType {
 pub struct PopupRequest {
     pub popup_type: PopupType,
     pub target: Option<Entity>,
-    pub text: Option<String>,
+    pub text: Option<Vec<String>>,
 }
 
 #[derive(Clone, PartialEq)]
@@ -60,7 +60,7 @@ pub struct Popup {
     pub width: i32,
     pub height: i32,
     pub target: Option<Entity>,
-    pub text: Option<String>,
+    pub text: Option<Vec<String>>,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -72,7 +72,8 @@ pub struct MouseInput {
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Computer {
-    pub computer_state: ComputerState
+    pub computer_state: ComputerState,
+    pub loaded_disk: Option<Entity>,
 }
 
 #[derive(Clone, Copy, PartialEq)]

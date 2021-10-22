@@ -77,7 +77,8 @@ pub fn spawn_computers(ecs: &mut World, computer_positions: &[Point]) {
         .iter()
         .for_each(|pos| {
             let computer = Computer {
-                computer_state: ComputerState::Unloaded
+                computer_state: ComputerState::Unloaded,
+                loaded_disk: None,
             };
             ecs.push(
                 (

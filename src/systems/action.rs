@@ -4,6 +4,7 @@ use crate::prelude::*;
 #[write_component(ActionRequest)]
 #[write_component(Computer)]
 #[write_component(Render)]
+#[write_component(Point)]
 #[read_component(Disk)]
 pub fn action(
     ecs: &mut SubWorld,
@@ -25,7 +26,7 @@ pub fn action(
                                 PopupRequest {
                                     popup_type: PopupType::TextOutput,
                                     target: None,
-                                    text: Some(disk.disk_label.clone()),
+                                    text: Some(vec![disk.disk_label.clone()]),
                                 }
                             ));
                         }
@@ -35,7 +36,44 @@ pub fn action(
                     println!("Smell action selected and handled");
                 },
                 Actions::Load => {
-                    println!("Load action selected and handled");
+                    let mut computers = <(Entity, &Computer)>::query()
+                        .iter(ecs)
+                        .filter(|(_, computer)| computer.computer_state != ComputerState::Loaded)
+                        .nth(0);
+
+                    if let Some((computer_entity, computer)) = computers {
+                        if let Some(mut target_disk) = &action_request.target {
+                            let disk_ref = ecs.entry_ref(target_disk).unwrap();
+                            if let Ok(render) = disk_ref.get_component::<Render>()
+                            {
+                                let mut disk_render = render.clone();
+                                disk_render.render = false;
+                                commands.add_component(target_disk, disk_render);
+                            }
+                            if let Ok(point) = disk_ref.get_component::<Point>()
+                            {
+                                let mut disk_point = point.clone();
+                                disk_point.x = -1;
+                                disk_point.y = -1;
+                                commands.add_component(target_disk, disk_point);
+                            }
+                            let mut computer = computer.clone();
+                            computer.computer_state = ComputerState::Loaded;
+                            computer.loaded_disk = Some(target_disk);
+                            commands.add_component(*computer_entity, computer);
+                        }
+                    }
+                    else
+                    {
+                        commands.push(((),
+                            Point::new(10, 5),
+                            PopupRequest {
+                                popup_type: PopupType::TextOutput,
+                                target: None,
+                                text: Some(vec!["There are no available".to_string(), "computers to load the disk.".to_string()]),
+                            }
+                        ));
+                    }
                 },
                 Actions::Compile => {
                     println!("Compile action selected and handled");
