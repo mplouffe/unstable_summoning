@@ -54,6 +54,7 @@ pub fn spawn_disks(ecs: &mut World, rng: &mut ThreadRng, disk_positions: &[Point
                 color: disk_color,
                 disk_state: DiskState::Untouched,
                 disk_label: "This is the label description".to_string(),
+                original_pos: pos.clone(),
             };
             ecs.push(
                 (

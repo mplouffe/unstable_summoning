@@ -38,6 +38,7 @@ pub struct Cursor {
 pub enum PopupType {
     UnloadedDisk,
     TextOutput,
+    Computer,
 }
 
 #[derive(Clone, PartialEq)]
@@ -81,6 +82,7 @@ pub enum ComputerState {
     Unloaded,
     Loaded,
     Compiling,
+    Running,
 }
 
 #[derive(Clone, PartialEq)]
@@ -88,12 +90,12 @@ pub struct Disk {
     pub color: DiskColor,
     pub disk_state: DiskState,
     pub disk_label: String,
+    pub original_pos: Point,
 }
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum DiskState {
     Untouched,
-    Grabbed,
     Loaded,
 }
 
@@ -107,12 +109,18 @@ pub enum ClickState {
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
 pub enum Actions {
+    // actions for Disk
     Look,
     Smell,
-    Load,   // all actions post here require DiskState == Grabbed
+    Load,
+    Unload,
+    
+    // actions for Computer
     Compile,
     StackDump,
     Run,
+    StopRun,
+
     CloseWindow,
 }
 

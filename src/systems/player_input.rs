@@ -6,6 +6,7 @@ use crate::prelude::*;
 #[write_component(Cursor)]
 #[read_component(Player)]
 #[read_component(Disk)]
+#[read_component(Computer)]
 #[write_component(Popup)]
 pub fn player_input(
     ecs: &mut SubWorld,
@@ -106,6 +107,18 @@ pub fn player_input(
                         {
                             cursor.is_active = true;
                             cursor_target_updated = true;
+                        }
+                        else if let Ok(_computer) = entity_ref.get_component::<Computer>()
+                        {
+                            cursor.is_active = true;
+                            cursor_target_updated = true;
+                            commands.push(((), PopupRequest {
+                                popup_type: PopupType::Computer,
+                                target: Some(*entity),
+                                text: None,
+                                },
+                                Point::new(2, 5)
+                            ));
                         }
                     });
                 

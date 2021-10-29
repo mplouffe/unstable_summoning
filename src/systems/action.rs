@@ -92,6 +92,35 @@ pub fn action(
                             }
                         ));
                     }
+                },
+                Actions::StopRun => {
+                    println!("Stop run action selected and handled");
+                },
+                Actions::Unload => {
+                    if let Some(mut target_computer) = &action_request.target {
+                        let computer_ref = ecs.entry_ref(target_computer).unwrap();
+                        if let Ok(computer) = computer_ref.get_component::<Computer>() {
+                            if let Some(target_disk) = computer.loaded_disk {
+                                let disk_ref = ecs.entry_ref(target_disk).unwrap();
+                                if let Ok(disk) = disk_ref.get_component::<Disk>()
+                                {
+                                    if let Ok(render) = disk_ref.get_component::<Render>()
+                                    {
+                                        let mut disk_render = render.clone();
+                                        disk_render.render = true;
+                                        commands.add_component(target_disk, disk_render);
+                                    }
+                                    commands.add_component(target_disk, disk.original_pos);
+                                }
+
+                            }
+
+                            let mut computer = computer.clone();
+                            computer.computer_state = ComputerState::Unloaded;
+                            computer.loaded_disk = None;
+                            commands.add_component(target_computer, computer);
+                        }
+                    }
                 }
             }
 
