@@ -72,6 +72,14 @@ pub struct MouseInput {
 }
 
 #[derive(Clone, Copy, PartialEq)]
+pub enum ClickState {
+    Unclicked,
+    Clicked,
+    Held,
+    Released
+}
+
+#[derive(Clone, Copy, PartialEq)]
 pub struct Computer {
     pub computer_state: ComputerState,
     pub loaded_disk: Option<Entity>,
@@ -99,13 +107,7 @@ pub enum DiskState {
     Loaded,
 }
 
-#[derive(Clone, Copy, PartialEq)]
-pub enum ClickState {
-    Unclicked,
-    Clicked,
-    Held,
-    Released
-}
+
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
 pub enum Actions {

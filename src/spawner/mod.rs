@@ -99,16 +99,78 @@ pub fn spawn_computers(ecs: &mut World, computer_positions: &[Point]) {
 }
 
 pub fn spawn_infrastructure(ecs: &mut World) {
+    // the platform
     ecs.push(
         (
-            Name("Platform".to_string()),
             Point::new(9, 4),
             Render {
                 render: true,
                 z_order: 100,
                 tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-                index: 2,
-                scale: (2, 2),
+                index: 29,
+                scale: (1, 1),
+            }
+        )
+    );
+    ecs.push(
+        (
+            Point::new(8, 4),
+            Render {
+                render: true,
+                z_order: 100,
+                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                index: 28,
+                scale: (1, 1),
+            }
+        )
+    );
+    ecs.push(
+        (
+            Point::new(10, 4),
+            Render {
+                render: true,
+                z_order: 100,
+                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                index: 30,
+                scale: (1, 1),
+            }
+        )
+    );
+
+    // pipes
+    ecs.push(
+        (
+            Point::new(10, 5),
+            Render {
+                render: true,
+                z_order: 100,
+                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                index: 53,
+                scale: (1, 1),
+            }
+        )
+    );
+    ecs.push(
+        (
+            Point::new(9, 5),
+            Render {
+                render: true,
+                z_order: 100,
+                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                index: 52,
+                scale: (1, 1),
+            }
+        )
+    );
+    ecs.push(
+        (
+            Point::new(8, 5),
+            Render {
+                render: true,
+                z_order: 100,
+                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                index: 53,
+                scale: (1, 1),
             }
         )
     );
