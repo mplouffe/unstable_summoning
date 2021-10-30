@@ -102,7 +102,7 @@ pub fn spawn_infrastructure(ecs: &mut World) {
     // the platform
     ecs.push(
         (
-            Point::new(9, 4),
+            Point::new(10, 4),
             Render {
                 render: true,
                 z_order: 100,
@@ -114,7 +114,7 @@ pub fn spawn_infrastructure(ecs: &mut World) {
     );
     ecs.push(
         (
-            Point::new(8, 4),
+            Point::new(9, 4),
             Render {
                 render: true,
                 z_order: 100,
@@ -126,7 +126,7 @@ pub fn spawn_infrastructure(ecs: &mut World) {
     );
     ecs.push(
         (
-            Point::new(10, 4),
+            Point::new(11, 4),
             Render {
                 render: true,
                 z_order: 100,
@@ -137,43 +137,40 @@ pub fn spawn_infrastructure(ecs: &mut World) {
         )
     );
 
-    // pipes
+    // spawn the dimensional button
     ecs.push(
         (
-            Point::new(10, 5),
+            Name("Dimensional Collider".to_string()),
+            Point::new(10, 8),
             Render {
                 render: true,
                 z_order: 100,
                 tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-                index: 53,
-                scale: (1, 1),
-            }
+                index: 54,
+                scale: (1, 1)
+            },
+            DimensionalButton { },
         )
     );
-    ecs.push(
-        (
-            Point::new(9, 5),
-            Render {
-                render: true,
-                z_order: 100,
-                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-                index: 52,
-                scale: (1, 1),
-            }
-        )
-    );
-    ecs.push(
-        (
-            Point::new(8, 5),
-            Render {
-                render: true,
-                z_order: 100,
-                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-                index: 53,
-                scale: (1, 1),
-            }
-        )
-    );
+}
+
+pub fn spawn_pipes(ecs: &mut World, piping: &[(Point, usize)]) {
+    piping
+        .iter()
+        .for_each(|(pos, sprite_index)| {
+            ecs.push(
+                (
+                    pos.clone(),
+                    Render {
+                        render: true,
+                        z_order: 100,
+                        tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                        index: *sprite_index,
+                        scale: (1, 1)
+                    }
+                )
+            );
+        });
 }
 
 pub fn spawn_title_screen(ecs: &mut World) {

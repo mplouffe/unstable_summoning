@@ -10,10 +10,8 @@ mod prelude {
     pub use legion::world::SubWorld;
     pub use legion::systems::CommandBuffer;
 
-    pub const SCREEN_WIDTH: i32 = 40;
-    pub const SCREEN_HEIGHT: i32 = 20;
-    pub const DISPLAY_WIDTH: i32 = SCREEN_WIDTH / 2;
-    pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
+    pub const DISPLAY_WIDTH: i32 = 21;
+    pub const DISPLAY_HEIGHT: i32 = 11;
     pub const TILE_SIZE: i32 = 64;
     pub const BG_LAYER: usize = 0;
     pub const SPRITE_LAYER: usize = 1;
@@ -149,19 +147,39 @@ impl State {
             Point::new(4, 8),
             Point::new(6, 8),
             Point::new(8, 8),
-            Point::new(11, 8),
-            Point::new(13, 8),
-            Point::new(15, 8),
-            Point::new(17, 8),
+            Point::new(12, 8),
+            Point::new(14, 8),
+            Point::new(16, 8),
+            Point::new(18, 8),
         ];
         let computer_positions = [
             Point::new(5, 5),
-            Point::new(14, 5)
+            Point::new(15, 5)
+        ];
+
+        let piping = [
+            ( Point::new(11,5), 51 ),
+            ( Point::new(9, 5), 51 ),
+            ( Point::new(11, 6), 53 ),
+            ( Point::new(10, 6), 52 ),
+            ( Point::new(9, 6), 53 ),
+            ( Point::new(10, 7), 51 ),
+            ( Point::new(8, 6), 50 ),
+            ( Point::new(12, 6), 50 ),
+            ( Point::new(7, 6), 50 ),
+            ( Point::new(13, 6), 50 ),
+            ( Point::new(6, 6), 50 ),
+            ( Point::new(14, 6), 50 ),
+            ( Point::new(7, 6), 50 ),
+            ( Point::new(13, 6), 50 ),
+            ( Point::new(5, 6), 48 ),
+            ( Point::new(15, 6), 49 ),
         ];
 
         spawn_disks(&mut self.ecs, &mut thread_rng, &disk_positions);
         spawn_computers(&mut self.ecs, &computer_positions);
         spawn_infrastructure(&mut self.ecs);
+        spawn_pipes(&mut self.ecs, &piping);
 
         self.resources.insert(map);
         self.resources.insert(TurnState::AwaitingInput);
@@ -287,8 +305,8 @@ fn main() -> BError {
         .with_font("terminal8x8.png", 8, 8)
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "unstablefont.png")                 // BG
         .with_sprite_console(DISPLAY_WIDTH*TILE_SIZE, DISPLAY_HEIGHT*TILE_SIZE, 0)       // Sprite Layer
-        .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")          // HUD Layer
-        .with_sparse_console(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")                // Popup Layer
+        .with_simple_console_no_bg(DISPLAY_WIDTH*4, DISPLAY_HEIGHT*4, "terminal8x8.png")          // HUD Layer
+        .with_sparse_console(DISPLAY_WIDTH*4, DISPLAY_HEIGHT*4, "terminal8x8.png")                // Popup Layer
         .with_sprite_sheet(SpriteSheet {
             filename: "resources/sprite_sheet.png".to_string(),
             sprites,

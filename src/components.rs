@@ -39,6 +39,7 @@ pub enum PopupType {
     UnloadedDisk,
     TextOutput,
     Computer,
+    DimensionalButton,
 }
 
 #[derive(Clone, PartialEq)]
@@ -107,6 +108,8 @@ pub enum DiskState {
     Loaded,
 }
 
+#[derive(Clone, Copy, PartialEq)]
+pub struct DimensionalButton { }
 
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
@@ -124,6 +127,8 @@ pub enum Actions {
     StopRun,
 
     CloseWindow,
+
+    OpenTransDimensionalWarp,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]

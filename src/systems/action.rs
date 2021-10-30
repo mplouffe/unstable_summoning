@@ -9,6 +9,7 @@ use crate::prelude::*;
 pub fn action(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
+    #[resource] turn_state: &mut TurnState,
 ) {
     let mut action_requests = <(Entity, &ActionRequest)>::query();
 
@@ -38,7 +39,7 @@ pub fn action(
                 Actions::Load => {
                     let mut computers = <(Entity, &Computer)>::query()
                         .iter(ecs)
-                        .filter(|(_, computer)| computer.computer_state != ComputerState::Loaded)
+                        .filter(|(_, computer)| computer.computer_state == ComputerState::Unloaded)
                         .nth(0);
 
                     if let Some((computer_entity, computer)) = computers {
@@ -82,7 +83,14 @@ pub fn action(
                     println!("StackDump action selected and handled");
                 },
                 Actions::Run => {
-                    println!("Run action selected and handled");
+                    if let Some(mut target_computer) = &action_request.target {
+                        let computer_ref = ecs.entry_ref(target_computer).unwrap();
+                        if let Ok(computer) = computer_ref.get_component::<Computer>() {
+                            let mut computer = computer.clone();
+                            computer.computer_state = ComputerState::Running;
+                            commands.add_component(target_computer, computer);
+                        }
+                    }
                 },
                 Actions::CloseWindow => {
                     if let Some(popup_entity) = action_request.target {
@@ -94,7 +102,15 @@ pub fn action(
                     }
                 },
                 Actions::StopRun => {
-                    println!("Stop run action selected and handled");
+                    if let Some(mut target_computer) = &action_request.target {
+                        let computer_ref = ecs.entry_ref(target_computer).unwrap();
+                        if let Ok(computer) = computer_ref.get_component::<Computer>() {
+
+                            let mut computer = computer.clone();
+                            computer.computer_state = ComputerState::Loaded;
+                            commands.add_component(target_computer, computer);
+                        }
+                    }
                 },
                 Actions::Unload => {
                     if let Some(mut target_computer) = &action_request.target {
@@ -112,7 +128,6 @@ pub fn action(
                                     }
                                     commands.add_component(target_disk, disk.original_pos);
                                 }
-
                             }
 
                             let mut computer = computer.clone();
@@ -121,7 +136,64 @@ pub fn action(
                             commands.add_component(target_computer, computer);
                         }
                     }
-                }
+                },
+                Actions::OpenTransDimensionalWarp => {
+                    // spawn fire
+                    commands.push(
+                        ((),
+                        Point::new(8, 1),
+                        Render {
+                            render: true,
+                            z_order: 50,
+                            tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                            index: 0,
+                            scale: (5, 5),
+                        },
+                        Animation {
+                            state: AnimationState::Start,
+                            loop_play: true,
+                            animation_index: 0,
+                            starting_frame: 0,
+                            final_frame: 2,
+                        },
+                    ));
+                    commands.push(
+                        ((),
+                        Point::new(9, 2),
+                        Render {
+                            render: true,
+                            z_order: 200,
+                            tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                            index: 0,
+                            scale: (3, 3),
+                        },
+                        Animation {
+                            state: AnimationState::Start,
+                            loop_play: true,
+                            animation_index: 0,
+                            starting_frame: 1,
+                            final_frame: 2,
+                        },
+                    ));
+
+                    // spawn monster
+                    let mut rng = RandomNumberGenerator::new();
+                    let summoned_evil = rng.range(0, 16) + 32;
+                    
+                    commands.push(
+                        ((),
+                        Point::new(9,2),
+                        Render {
+                            render: true,
+                            z_order: 300,
+                            tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                            index: summoned_evil,
+                            scale: (3, 3),
+                        },
+                    ));
+
+                    *turn_state = TurnState::MonsterTurn;
+                },
             }
 
             commands.remove(*entity);

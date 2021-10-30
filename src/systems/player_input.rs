@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, turn_state};
 
 #[system]
 #[write_component(Point)]
@@ -8,10 +8,12 @@ use crate::prelude::*;
 #[read_component(Disk)]
 #[read_component(Computer)]
 #[write_component(Popup)]
+#[read_component(DimensionalButton)]
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
     #[resource] mouse_input: &MouseInput,
+    #[resource] turn_state: &mut TurnState,
 ) 
 {
     // update cursor position
@@ -119,6 +121,44 @@ pub fn player_input(
                                 },
                                 Point::new(2, 5)
                             ));
+                        }
+                        else if let Ok(_dimensional_button) = entity_ref.get_component::<DimensionalButton>()
+                        {
+                            let mut computers = <&Computer>::query();
+
+                            let loaded_computers = computers.iter(ecs).filter(|&computer| computer.computer_state == ComputerState::Running).count();
+                            
+                            if loaded_computers == 2 {
+                                cursor.is_active = true;
+                                cursor_target_updated = true;
+                                
+                                commands.add_component(*entity, Render {
+                                    render: true,
+                                    z_order: 100,
+                                    tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                                    index: 55,
+                                    scale: (1, 1)
+                                });
+
+                                commands.push(((),
+                                    ActionRequest {
+                                        action: Actions::OpenTransDimensionalWarp,
+                                        target: None,
+                                    }));
+
+                            }
+                            else
+                            {
+                                cursor.is_active = true;
+                                cursor_target_updated = true;
+                                commands.push(((), PopupRequest {
+                                    popup_type: PopupType::TextOutput,
+                                    target: Some(*entity),
+                                    text: Some(vec![String::from("Run a disk"), String::from("in both comps.")]),
+                                    },
+                                    Point::new(2, 5)
+                                ));
+                            }
                         }
                     });
                 

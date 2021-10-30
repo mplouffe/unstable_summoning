@@ -137,7 +137,7 @@ pub fn popup(
                                     buttons.push(Button {
                                         action: Actions::StopRun,
                                         button_area: Rect::with_size(pos.x+1, pos.y+1, 12, 1),
-                                        text: "STOP RUNNING".to_string(),
+                                        text: "STOP RUN".to_string(),
                                     });
                 
                                     commands.push(((),
@@ -156,7 +156,52 @@ pub fn popup(
                             }
                         }
                     }
+                },
+                PopupType::DimensionalButton => {
+                    let mut computers = <&Computer>::query();
 
+                    let loaded_computers = computers.iter(ecs).filter(|&computer| computer.computer_state == ComputerState::Running).count();
+                    
+                    if loaded_computers == 2 {
+                        let mut buttons = Vec::new();
+                        buttons.push(Button {
+                            action: Actions::CloseWindow,
+                            button_area: Rect::with_size(pos.x+25, pos.y+9, 10, 1),
+                            text: "CLOSE".to_string(),
+                        });
+
+                        commands.push(((),
+                        pos.clone(),
+                        Popup {
+                            popup_type: PopupType::TextOutput,
+                            options: buttons,
+                            bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
+                            width: 30,
+                            height: 10,
+                            target: None,
+                            text: Some(vec![String::from("Disks Loaded"), String::from("Button Pushed")]),
+                        }));
+                    }
+                    else {
+                        let mut buttons = Vec::new();
+                        buttons.push(Button {
+                            action: Actions::CloseWindow,
+                            button_area: Rect::with_size(pos.x+25, pos.y+9, 10, 1),
+                            text: "CLOSE".to_string(),
+                        });
+
+                        commands.push(((),
+                        pos.clone(),
+                        Popup {
+                            popup_type: PopupType::TextOutput,
+                            options: buttons,
+                            bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
+                            width: 30,
+                            height: 10,
+                            target: None,
+                            text: Some(vec![String::from("Run a disk"), String::from("in both comps.")]),
+                        }));
+                    }
                 },
             }
 

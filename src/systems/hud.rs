@@ -17,7 +17,7 @@ pub fn hud(ecs: &SubWorld) {
         "Hack the Planet! Click on disks interact with item.");
     draw_batch.bar_horizontal(
         Point::zero(),
-        SCREEN_WIDTH*2,
+        DISPLAY_WIDTH*4,
         player_health.current,
         player_health.max,
         ColorPair::new(RED, BLACK)
@@ -37,7 +37,7 @@ pub fn hud(ecs: &SubWorld) {
         .unwrap();
     
     draw_batch.print_color_right(
-        Point::new(SCREEN_WIDTH*2, (SCREEN_HEIGHT*2)-1),
+        Point::new(DISPLAY_WIDTH*4, (DISPLAY_WIDTH*4)-1),
         format!("Hacker Level: {}", level+1),
         ColorPair::new(YELLOW, BLACK)
     );

@@ -55,7 +55,6 @@ pub fn build_monster_scheduler() -> Schedule {
         .add_system(cursor_render::cursor_render_system())
         .add_system(computer_render::computer_render_system())
         .add_system(hud::hud_system())
-        .add_system(end_turn::end_turn_system())
         .build()
 }
 
