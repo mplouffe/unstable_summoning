@@ -45,7 +45,7 @@ impl State {
         let mut resources = Resources::default();
         let map = Map::new();
 
-        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5]];
+        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5], vec![56,57,58,59]];
         resources.insert(animations);
 
         spawn_title_screen(&mut ecs);
@@ -139,7 +139,7 @@ impl State {
         spawn_player(&mut self.ecs);
         spawn_cursor(&mut self.ecs);
 
-        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5]];
+        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5], vec![56,57,58,59]];
         self.resources.insert(animations);
 
         let disk_positions = [ 
@@ -153,27 +153,27 @@ impl State {
             Point::new(18, 8),
         ];
         let computer_positions = [
-            Point::new(5, 5),
-            Point::new(15, 5)
+            ( Point::new(5, 5), PartName::LeftComputer ),
+            ( Point::new(15, 5), PartName::RightComputer ),
         ];
 
         let piping = [
-            ( Point::new(11,5), 51 ),
-            ( Point::new(9, 5), 51 ),
-            ( Point::new(11, 6), 53 ),
-            ( Point::new(10, 6), 52 ),
-            ( Point::new(9, 6), 53 ),
-            ( Point::new(10, 7), 51 ),
-            ( Point::new(8, 6), 50 ),
-            ( Point::new(12, 6), 50 ),
-            ( Point::new(7, 6), 50 ),
-            ( Point::new(13, 6), 50 ),
-            ( Point::new(6, 6), 50 ),
-            ( Point::new(14, 6), 50 ),
-            ( Point::new(7, 6), 50 ),
-            ( Point::new(13, 6), 50 ),
-            ( Point::new(5, 6), 48 ),
-            ( Point::new(15, 6), 49 ),
+            ( Point::new(11,5), 51, PartName::Platform ),
+            ( Point::new(9, 5), 51, PartName::Platform ),
+            ( Point::new(11, 6), 53, PartName::DimensionalButton ),
+            ( Point::new(10, 6), 52, PartName::DimensionalButton ),
+            ( Point::new(9, 6), 53, PartName::DimensionalButton ),
+            ( Point::new(10, 7), 51, PartName::DimensionalButton ),
+            ( Point::new(8, 6), 50, PartName::LeftComputer ),
+            ( Point::new(12, 6), 50, PartName::RightComputer ),
+            ( Point::new(7, 6), 50, PartName::LeftComputer ),
+            ( Point::new(13, 6), 50, PartName::RightComputer ),
+            ( Point::new(6, 6), 50, PartName::LeftComputer ),
+            ( Point::new(14, 6), 50, PartName::RightComputer ),
+            ( Point::new(7, 6), 50, PartName::LeftComputer ),
+            ( Point::new(13, 6), 50, PartName::RightComputer ),
+            ( Point::new(5, 6), 48, PartName::LeftComputer ),
+            ( Point::new(15, 6), 49, PartName::RightComputer ),
         ];
 
         spawn_disks(&mut self.ecs, &mut thread_rng, &disk_positions);
@@ -289,9 +289,9 @@ impl GameState for State {
 fn main() -> BError {
 
     let mut sprites = Vec::new();
-    for y in 0..8 {
-        for x in 0..8 {
-            sprites.push(Sprite::new(Rect::with_size(x*32, 224-(y*32), 32, 32)));
+    for y in 0..12 {
+        for x in 0..12 {
+            sprites.push(Sprite::new(Rect::with_size(x*32, 352-(y*32), 32, 32)));
         }
     }
 

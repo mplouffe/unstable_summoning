@@ -73,11 +73,12 @@ pub fn spawn_disks(ecs: &mut World, rng: &mut ThreadRng, disk_positions: &[Point
         });
 }
 
-pub fn spawn_computers(ecs: &mut World, computer_positions: &[Point]) {   
+pub fn spawn_computers(ecs: &mut World, computer_positions: &[(Point, PartName)]) {   
     computer_positions
         .iter()
-        .for_each(|pos| {
+        .for_each(|(pos, computer_name)| {
             let computer = Computer {
+                name: *computer_name,
                 computer_state: ComputerState::Unloaded,
                 loaded_disk: None,
             };
@@ -154,10 +155,10 @@ pub fn spawn_infrastructure(ecs: &mut World) {
     );
 }
 
-pub fn spawn_pipes(ecs: &mut World, piping: &[(Point, usize)]) {
+pub fn spawn_pipes(ecs: &mut World, piping: &[(Point, usize, PartName)]) {
     piping
         .iter()
-        .for_each(|(pos, sprite_index)| {
+        .for_each(|(pos, sprite_index, pipe_owner)| {
             ecs.push(
                 (
                     pos.clone(),
@@ -167,6 +168,10 @@ pub fn spawn_pipes(ecs: &mut World, piping: &[(Point, usize)]) {
                         tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
                         index: *sprite_index,
                         scale: (1, 1)
+                    },
+                    Part {
+                        name: PartName::Pipe,
+                        supports: Some(*pipe_owner)
                     }
                 )
             );

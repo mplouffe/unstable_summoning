@@ -13,7 +13,6 @@ pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
     #[resource] mouse_input: &MouseInput,
-    #[resource] turn_state: &mut TurnState,
 ) 
 {
     // update cursor position

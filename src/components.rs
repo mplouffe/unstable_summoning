@@ -82,6 +82,7 @@ pub enum ClickState {
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Computer {
+    pub name: PartName,
     pub computer_state: ComputerState,
     pub loaded_disk: Option<Entity>,
 }
@@ -92,6 +93,21 @@ pub enum ComputerState {
     Loaded,
     Compiling,
     Running,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum PartName {
+    LeftComputer,
+    RightComputer,
+    DimensionalButton,
+    Platform,
+    Pipe
+}
+
+#[derive(Clone, PartialEq)]
+pub struct Part {
+    pub name: PartName,
+    pub supports: Option<PartName>
 }
 
 #[derive(Clone, PartialEq)]
