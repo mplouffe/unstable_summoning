@@ -8,7 +8,7 @@ A console game about hacking and summoning demons.
 Made in rust using bracket-lib and legion.
 
 <p align="center">
-  <img src="/docs/game_screen_02.gif" title="Unstable Trans-Dimensional Hacking Game Screen">
+  <img src="/docs/game_screen_03.gif" title="Unstable Trans-Dimensional Hacking Game Screen">
 </p>
 
 
