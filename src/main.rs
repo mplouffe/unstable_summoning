@@ -75,18 +75,18 @@ impl State {
         ctx.set_active_console(HUD_LAYER);
         ctx.print_color_centered(20, RED, BLACK, "Your experiment has ended.");
         ctx.print_color_centered(25, WHITE, BLACK,
-            "Slain by a monster, your hero's journey has come to a \
-            premature end.");
+            "Slain by a monster, your journey has come to a premature end.");
         ctx.print_color_centered(26, WHITE, BLACK,
-            "The purpose of your experiments will never be known \
-            as your notes were destroyed in the tragedy that killed you.");
+            "The purpose of your experiments will never be known");
+        ctx.print_color_centered(27, WHITE, BLACK,
+            "as your notes were destroyed in the tragedy that killed you.");
         ctx.print_color_centered(30, YELLOW, BLACK,
             "Don't worry, you can always try again.");
         ctx.print_color_centered(35, GREEN, BLACK,
             "Press f to pay respects.");
         
         if let Some(VirtualKeyCode::F) = ctx.key {
-            self.reset_game_state();
+            self.reset_start_menu();
         }
     }
 
@@ -111,9 +111,7 @@ impl State {
 
         if let Some(VirtualKeyCode::Space) = ctx.key {
             self.reset_game_state();
-        }
-
-        
+        }   
     }
 
     // fn victory(&mut self, ctx: &mut BTerm) {
@@ -130,6 +128,26 @@ impl State {
     //         self.reset_game_state();
     //     }
     // }
+
+    fn reset_start_menu(&mut self) {
+        self.ecs = World::default();
+        self.resources = Resources::default();
+        let map = Map::new();
+
+        let animations: Vec<Vec<usize>> = vec![vec![3, 4, 5], vec![56,57,58,59]];
+        self.resources.insert(animations);
+
+        spawn_title_screen(&mut self.ecs);
+
+        self.resources.insert(map);
+        self.resources.insert(TurnState::GameStart);
+        let time_info = TimerInfo {
+            timer: 0.0,
+            frame: 0,
+        };
+
+        self.resources.insert(time_info);  
+    }
 
     fn reset_game_state(&mut self) {
         self.ecs = World::default();

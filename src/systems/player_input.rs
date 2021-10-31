@@ -1,4 +1,4 @@
-use crate::{prelude::*, turn_state};
+use crate::{prelude::*};
 
 #[system]
 #[write_component(Point)]
@@ -26,153 +26,92 @@ pub fn player_input(
     // click on things
     match mouse_input.left_click {
         ClickState::Released => {
-            let mut click_consumed = false;
-
-            let mut popups = <(Entity, &Popup)>::query();
-            popups
+            let mut positions = <(Entity, &Point, &Name)>::query()
+                .filter(!component::<Cursor>());
+        
+            let mut cursor_target_updated = false;
+            positions
                 .iter(ecs)
-                .filter(|(_, popup)| popup.bounding_box.point_in_rect(mouse_input.mouse_point_hud))
-                .for_each(|(entity, popup)| {
-                    click_consumed = true;
-                    popup.options.iter()
-                        .filter(|option| option.button_area.point_in_rect(mouse_input.mouse_point_hud))
-                        .for_each(|option| {
-                            match option.action {
-                                Actions::CloseWindow => {
-                                    commands.push(((),
-                                        ActionRequest {
-                                            target: Some(*entity),
-                                            action: option.action,
-                                    }));
-                                    cursor.is_active = false;
-                                    commands.add_component(cursor_entity, cursor);
-                                },
-                                Actions::Load => {
-                                    commands.push(((),
-                                        ActionRequest {
-                                            target: Some(*entity),
-                                            action: Actions::CloseWindow,
-                                        }
-                                    ));
-                                    commands.push(((),
-                                        ActionRequest {
-                                            target: popup.target,
-                                            action: option.action
-                                        }
-                                    ));
-                                    cursor.is_active = false;
-                                    commands.add_component(cursor_entity, cursor);
-                                },
-                                _ => {  
-                                    commands.push(((),
-                                        ActionRequest {
-                                            target: Some(*entity),
-                                            action: Actions::CloseWindow,
-                                        }
-                                    ));
-                                    commands.push(((),
-                                        ActionRequest {
-                                            target: popup.target,
-                                            action: option.action,
-                                    }));
-                                }
-                            }
-                        }
-                    );
-                }
-            );
-
-            if !click_consumed {
-                let mut positions = <(Entity, &Point, &Name)>::query()
-                    .filter(!component::<Cursor>());
-            
-                let mut cursor_target_updated = false;
-                positions
-                    .iter(ecs)
-                    .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
-                    .for_each(|(entity, _pos, _name)| {
-                        let entity_ref = ecs.entry_ref(*entity).unwrap();
-                        if let Ok(_disk) = entity_ref.get_component::<Disk>()
-                        {
-                            cursor.is_active = true;
-                            cursor_target_updated = true;
-                            commands.push(((), PopupRequest {
-                                    popup_type: PopupType::UnloadedDisk,
-                                    target: Some(*entity),
-                                    text: None,
-                                },
-                                Point::new(2, 5)
-                            ));
-                        }
-                        else if let Ok(_player) = entity_ref.get_component::<Player>()
-                        {
-                            cursor.is_active = true;
-                            cursor_target_updated = true;
-                        }
-                        else if let Ok(_computer) = entity_ref.get_component::<Computer>()
-                        {
-                            cursor.is_active = true;
-                            cursor_target_updated = true;
-                            commands.push(((), PopupRequest {
-                                popup_type: PopupType::Computer,
+                .filter(|(_, pos, _)| **pos == mouse_input.mouse_point_bg)
+                .for_each(|(entity, _pos, _name)| {
+                    let entity_ref = ecs.entry_ref(*entity).unwrap();
+                    if let Ok(_disk) = entity_ref.get_component::<Disk>()
+                    {
+                        cursor.is_active = true;
+                        cursor_target_updated = true;
+                        commands.push(((), PopupRequest {
+                                popup_type: PopupType::UnloadedDisk,
                                 target: Some(*entity),
                                 text: None,
+                            },
+                            Point::new(2, 5)
+                        ));
+                    }
+                    else if let Ok(_player) = entity_ref.get_component::<Player>()
+                    {
+                        cursor.is_active = true;
+                        cursor_target_updated = true;
+                    }
+                    else if let Ok(_computer) = entity_ref.get_component::<Computer>()
+                    {
+                        cursor.is_active = true;
+                        cursor_target_updated = true;
+                        commands.push(((), PopupRequest {
+                            popup_type: PopupType::Computer,
+                            target: Some(*entity),
+                            text: None,
+                            },
+                            Point::new(2, 5)
+                        ));
+                    }
+                    else if let Ok(_dimensional_button) = entity_ref.get_component::<DimensionalButton>()
+                    {
+                        let mut computers = <&Computer>::query();
+
+                        let loaded_computers = computers.iter(ecs).filter(|&computer| computer.computer_state == ComputerState::Running).count();
+                        
+                        if loaded_computers == 2 {                                
+                            commands.add_component(*entity, Render {
+                                render: true,
+                                z_order: 100,
+                                tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
+                                index: 55,
+                                scale: (1, 1)
+                            });
+
+                            commands.push(((),
+                                ActionRequest {
+                                    action: Actions::OpenTransDimensionalWarp,
+                                    target: None,
+                                }));
+
+                        }
+                        else
+                        {
+                            cursor.is_active = true;
+                            cursor_target_updated = true;
+                            commands.push(((), PopupRequest {
+                                popup_type: PopupType::TextOutput,
+                                target: Some(*entity),
+                                text: Some(vec![String::from("Run a disk"), String::from("in both comps.")]),
                                 },
                                 Point::new(2, 5)
                             ));
                         }
-                        else if let Ok(_dimensional_button) = entity_ref.get_component::<DimensionalButton>()
-                        {
-                            let mut computers = <&Computer>::query();
-
-                            let loaded_computers = computers.iter(ecs).filter(|&computer| computer.computer_state == ComputerState::Running).count();
-                            
-                            if loaded_computers == 2 {
-                                cursor.is_active = true;
-                                cursor_target_updated = true;
-                                
-                                commands.add_component(*entity, Render {
-                                    render: true,
-                                    z_order: 100,
-                                    tint: RGBA::from_f32(1.0, 1.0, 1.0, 1.0),
-                                    index: 55,
-                                    scale: (1, 1)
-                                });
-
-                                commands.push(((),
-                                    ActionRequest {
-                                        action: Actions::OpenTransDimensionalWarp,
-                                        target: None,
-                                    }));
-
-                            }
-                            else
-                            {
-                                cursor.is_active = true;
-                                cursor_target_updated = true;
-                                commands.push(((), PopupRequest {
-                                    popup_type: PopupType::TextOutput,
-                                    target: Some(*entity),
-                                    text: Some(vec![String::from("Run a disk"), String::from("in both comps.")]),
-                                    },
-                                    Point::new(2, 5)
-                                ));
-                            }
-                        }
-                    });
-                
-                if cursor_target_updated {
-                    commands.add_component(cursor_entity, cursor);
-                    commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
-                } else {
-                    if cursor.is_active {
-                        cursor.is_active = false;
-                        commands.add_component(cursor_entity, cursor);
-                        commands.push(((), ClosePopupRequest {
-                                target: None,
-                            }
-                        ));
                     }
+                });
+            
+            if cursor_target_updated {
+                commands.add_component(cursor_entity, cursor);
+                commands.add_component(cursor_entity, mouse_input.mouse_point_bg);
+            } else {
+                if cursor.is_active {
+                    cursor.is_active = false;
+                    commands.add_component(cursor_entity, cursor);
+                    commands.push(((), ClosePopupRequest {
+                            target: None,
+                        }
+                    ));
                 }
             }
         },

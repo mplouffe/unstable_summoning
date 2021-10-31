@@ -157,51 +157,33 @@ pub fn popup(
                         }
                     }
                 },
-                PopupType::DimensionalButton => {
-                    let mut computers = <&Computer>::query();
+                PopupType::EndGame => {
+                    let mut buttons = Vec::new();
+                    buttons.push(Button {
+                        action: Actions::EndGame,
+                        button_area: Rect::with_size(pos.x+20, pos.y+11, 10, 1),
+                        text: "END GAME".to_string(),
+                    });
 
-                    let loaded_computers = computers.iter(ecs).filter(|&computer| computer.computer_state == ComputerState::Running).count();
-                    
-                    if loaded_computers == 2 {
-                        let mut buttons = Vec::new();
-                        buttons.push(Button {
-                            action: Actions::CloseWindow,
-                            button_area: Rect::with_size(pos.x+25, pos.y+9, 10, 1),
-                            text: "CLOSE".to_string(),
-                        });
-
-                        commands.push(((),
-                        pos.clone(),
-                        Popup {
-                            popup_type: PopupType::TextOutput,
-                            options: buttons,
-                            bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
-                            width: 30,
-                            height: 10,
-                            target: None,
-                            text: Some(vec![String::from("Disks Loaded"), String::from("Button Pushed")]),
-                        }));
-                    }
-                    else {
-                        let mut buttons = Vec::new();
-                        buttons.push(Button {
-                            action: Actions::CloseWindow,
-                            button_area: Rect::with_size(pos.x+25, pos.y+9, 10, 1),
-                            text: "CLOSE".to_string(),
-                        });
-
-                        commands.push(((),
-                        pos.clone(),
-                        Popup {
-                            popup_type: PopupType::TextOutput,
-                            options: buttons,
-                            bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
-                            width: 30,
-                            height: 10,
-                            target: None,
-                            text: Some(vec![String::from("Run a disk"), String::from("in both comps.")]),
-                        }));
-                    }
+                    commands.push(((),
+                    pos.clone(),
+                    Popup {
+                        popup_type: PopupType::TextOutput,
+                        options: buttons,
+                        bounding_box: Rect::with_size(pos.x, pos.y, 30, 12),
+                        width: 30,
+                        height: 12,
+                        target: None,
+                        text: Some(vec![String::from("Something is wrong!"),
+                                        String::from(""),
+                                        String::from("The hack made a monster!"),
+                                        String::from(""),
+                                        String::from("It smells of decay"),
+                                        String::from("and social media..."),
+                                        String::from(""),
+                                        String::from("It attacks you and you die!")
+                                    ]),
+                    }));
                 },
             }
 

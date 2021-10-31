@@ -5,6 +5,8 @@ use crate::prelude::*;
 #[write_component(Computer)]
 #[write_component(Render)]
 #[write_component(Point)]
+#[read_component(Part)]
+#[read_component(Animation)]
 #[read_component(Disk)]
 pub fn action(
     ecs: &mut SubWorld,
@@ -86,6 +88,33 @@ pub fn action(
                     if let Some(mut target_computer) = &action_request.target {
                         let computer_ref = ecs.entry_ref(target_computer).unwrap();
                         if let Ok(computer) = computer_ref.get_component::<Computer>() {
+
+                            <(Entity, &Part, &Point, &Render)>::query()
+                                .iter(ecs)
+                                .filter(|(_, pipe_part,_ ,_)| {
+                                    if let Some(support_name) = pipe_part.supports {
+                                        return support_name == computer.name;
+                                    }
+                                    return false;
+                                })
+                                .for_each(|(_, pipe_part, pipe_point, pipe_render)| {
+                                    let electricity = Animation {
+                                        state: AnimationState::Start,
+                                        starting_frame: 0,
+                                        loop_play: true,
+                                        animation_index: 1,
+                                        final_frame: 3
+                                    };
+                                    commands.push(
+                                        (
+                                            (),
+                                            electricity.clone(),
+                                            pipe_point.clone(),
+                                            pipe_render.clone(),
+                                            pipe_part.clone(),
+                                        ));
+                                });
+                            
                             let mut computer = computer.clone();
                             computer.computer_state = ComputerState::Running;
                             commands.add_component(target_computer, computer);
@@ -105,6 +134,18 @@ pub fn action(
                     if let Some(mut target_computer) = &action_request.target {
                         let computer_ref = ecs.entry_ref(target_computer).unwrap();
                         if let Ok(computer) = computer_ref.get_component::<Computer>() {
+
+                            <(Entity, &Part, &Animation)>::query()
+                            .iter(ecs)
+                            .filter(|(_, pipe_part_animation,_)| {
+                                if let Some(support_name) = pipe_part_animation.supports {
+                                    return support_name == computer.name;
+                                }
+                                return false;
+                            })
+                            .for_each(|(pipe_entity, _, _)| {
+                                commands.remove(*pipe_entity);
+                            });
 
                             let mut computer = computer.clone();
                             computer.computer_state = ComputerState::Loaded;
@@ -138,6 +179,34 @@ pub fn action(
                     }
                 },
                 Actions::OpenTransDimensionalWarp => {
+                    <(&Part, &Point, &Render)>::query()
+                        .iter(ecs)
+                        .filter(|(pipe_part, _, _)| {
+                            if let Some(part_support_name) = pipe_part.supports {
+                                return match part_support_name {
+                                    PartName::DimensionalButton => true,
+                                    PartName::Platform => true,
+                                    _ => false,
+                                }
+                            }
+                            false
+                        })
+                        .for_each(|(pipe_part, point, render)| {
+                            let electricity = Animation {
+                                state: AnimationState::Start,
+                                starting_frame: 0,
+                                loop_play: true,
+                                animation_index: 1,
+                                final_frame: 3
+                            };
+                            commands.push(((),
+                                pipe_part.clone(),
+                                point.clone(),
+                                render.clone(),
+                                electricity.clone()
+                            ));
+                        });
+
                     // spawn fire
                     commands.push(
                         ((),
@@ -191,9 +260,19 @@ pub fn action(
                             scale: (3, 3),
                         },
                     ));
-
+                    commands.push(((),
+                        Point::new(26, 28),
+                        PopupRequest {
+                            popup_type: PopupType::EndGame,
+                            target: None,
+                            text: None,
+                        }
+                    ));
                     *turn_state = TurnState::MonsterTurn;
                 },
+                Actions::EndGame => {
+                    *turn_state = TurnState::GameOver;
+                }
             }
 
             commands.remove(*entity);

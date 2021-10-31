@@ -39,7 +39,7 @@ pub enum PopupType {
     UnloadedDisk,
     TextOutput,
     Computer,
-    DimensionalButton,
+    EndGame,
 }
 
 #[derive(Clone, PartialEq)]
@@ -145,6 +145,7 @@ pub enum Actions {
     CloseWindow,
 
     OpenTransDimensionalWarp,
+    EndGame,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, EnumIter)]
