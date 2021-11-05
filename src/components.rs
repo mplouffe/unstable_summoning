@@ -59,8 +59,6 @@ pub struct Popup {
     pub popup_type: PopupType,
     pub options: Vec<Button>,
     pub bounding_box: Rect,
-    pub width: i32,
-    pub height: i32,
     pub target: Option<Entity>,
     pub text: Option<Vec<String>>,
 }

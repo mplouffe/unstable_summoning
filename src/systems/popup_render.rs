@@ -5,8 +5,7 @@ use crate::prelude::*;
 #[read_component(Name)]
 #[read_component(Popup)]
 pub fn popup_render(
-    ecs: &SubWorld,
-    #[resource] mouse_input: &MouseInput
+    ecs: &SubWorld
 ) {
     let mut positions = <(Entity, &Point, &Popup)>::query();
 
@@ -15,19 +14,8 @@ pub fn popup_render(
     positions
         .iter(ecs)
         .for_each(|(_entity, pos, popup)| {
-            draw_batch.draw_box(Rect::with_size(pos.x, pos.y, popup.width, popup.height), ColorPair::new(GREEN, BLACK));
-            
-            popup.options.iter()
-                .for_each(|option| {
-                    let color;
-                    if option.button_area.point_in_rect(mouse_input.mouse_point_hud) {
-                        color = ColorPair::new(RED, BLACK);
-                    } else {
-                        color = ColorPair::new(GREEN, BLACK);
-                    }
-                    draw_batch.print_color(Point::new(option.button_area.x1, option.button_area.y1), option.text.clone(), color);
-                });
-            
+            draw_batch.draw_box(popup.bounding_box, ColorPair::new(GREEN, BLACK));
+
             match popup.popup_type {
                 PopupType::TextOutput => {
                     if let Some(popup_text_lines) = &popup.text {
@@ -43,5 +31,6 @@ pub fn popup_render(
                 _ => {}
             }
         });
+
     draw_batch.submit(10100).expect("Batch error");
 }

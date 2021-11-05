@@ -2,6 +2,7 @@ use crate::prelude::*;
 
 mod animation;
 mod action;
+mod button_render;
 mod computer_render;
 mod cursor_render;
 mod map_render;
@@ -25,6 +26,7 @@ pub fn build_input_scheduler() -> Schedule {
         .add_system(animation::animation_system())
         .add_system(popup::popup_system())
         .add_system(popup_render::popup_render_system())
+        .add_system(button_render::button_render_system())
         .add_system(entity_render::entity_render_system())
         .add_system(cursor_render::cursor_render_system())
         .add_system(computer_render::computer_render_system())
@@ -39,6 +41,7 @@ pub fn build_player_scheduler() -> Schedule {
         .add_system(map_render::map_render_system())
         .add_system(popup::popup_system())
         .add_system(popup_render::popup_render_system())
+        .add_system(button_render::button_render_system())
         .add_system(entity_render::entity_render_system())
         .add_system(cursor_render::cursor_render_system())
         .add_system(computer_render::computer_render_system())
@@ -55,6 +58,7 @@ pub fn build_monster_scheduler() -> Schedule {
         .add_system(popup_input::popup_input_system())
         .add_system(popup::popup_system())
         .add_system(popup_render::popup_render_system())
+        .add_system(button_render::button_render_system())
         .add_system(entity_render::entity_render_system())
         .add_system(cursor_render::cursor_render_system())
         .add_system(computer_render::computer_render_system())

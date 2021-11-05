@@ -40,8 +40,6 @@ pub fn popup(
                             popup_type: request.popup_type,
                             options: buttons,
                             bounding_box: Rect::with_size(pos.x, pos.y, 12, 8),
-                            width: 12,
-                            height: 8,
                             target: request.target,
                             text: None,
                         }
@@ -62,8 +60,6 @@ pub fn popup(
                                 popup_type: request.popup_type,
                                 options: buttons,
                                 bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
-                                width: 30,
-                                height: 10,
                                 target: None,
                                 text: Some(popup_text.clone()),
                             }));
@@ -89,8 +85,6 @@ pub fn popup(
                                         popup_type: PopupType::TextOutput,
                                         options: buttons,
                                         bounding_box: Rect::with_size(pos.x, pos.y, 30, 10),
-                                        width: 30,
-                                        height: 10,
                                         target: None,
                                         text: Some(vec!["Load a disk to use computer.".to_string()]),
                                     }));
@@ -124,8 +118,6 @@ pub fn popup(
                                             popup_type: request.popup_type,
                                             options: buttons,
                                             bounding_box: Rect::with_size(pos.x, pos.y, 12, 8),
-                                            width: 12,
-                                            height: 8,
                                             target: request.target,
                                             text: None,
                                         }
@@ -146,8 +138,6 @@ pub fn popup(
                                             popup_type: request.popup_type,
                                             options: buttons,
                                             bounding_box: Rect::with_size(pos.x, pos.y, 12, 8),
-                                            width: 12,
-                                            height: 8,
                                             target: request.target,
                                             text: None,
                                         }
@@ -171,8 +161,6 @@ pub fn popup(
                         popup_type: PopupType::TextOutput,
                         options: buttons,
                         bounding_box: Rect::with_size(pos.x, pos.y, 30, 12),
-                        width: 30,
-                        height: 12,
                         target: None,
                         text: Some(vec![String::from("Something is wrong!"),
                                         String::from(""),
